@@ -2,23 +2,62 @@ import storage from './storage';
 import api from './api';
 
 const state = {
-    dataAttributeKey: 'data-better-reviews-like',
-    hasPersonallyLikedClassname: 'better-reviews_has-personally-liked',
     localStorageKey: 'better-reviews-likes',
+    dataAttributes: {
+        likeableElement: 'data-better-reviews-like',
+        personalLikesIcon: 'data-better-reviews-personal-likes',
+        personalLikesTotal: 'data-better-reviews-personal-likes-total',
+    },
+    classNames: {
+        hasPersonallyLiked: 'better-reviews__has-personally-liked',
+        hasPersonalLikes: 'better-reviews__has-personal-likes'
+    },
 };
 
 export default function likes() {
     // Add the click handler to likeable items, and set whether they have been Liked by the current user
     setupLikeableElements();
+
+    // Add the total to the personal likes icon, and add the associated listeners for when likes changes
+    renderPersonalLikesElements();
+    document
+        .addEventListener(
+            'better-reviews:personal-like-total-changed',
+            renderPersonalLikesElements
+        )
+    ;
+}
+
+function renderPersonalLikesElements() {
+    const hasLikes = hasPersonalLikes();
+    const totalLikes = getPersonalLikes().length;
+
+    document
+        .querySelectorAll(`[${state.dataAttributes.personalLikesIcon}]`)
+        .forEach((personalLikesElement) => {
+            if (hasLikes) {
+                personalLikesElement.classList.add(state.classNames.hasPersonalLikes);
+            } else {
+                personalLikesElement.classList.remove(state.classNames.hasPersonalLikes);
+            }
+        })
+    ;
+
+    document
+        .querySelectorAll(`[${state.dataAttributes.personalLikesTotal}]`)
+        .forEach((personalLikesTotalElement) => {
+            personalLikesTotalElement.innerText = totalLikes;
+        })
+    ;
 }
 
 function setupLikeableElements() {
     document
-        .querySelectorAll(`[${state.dataAttributeKey}]`)
+        .querySelectorAll(`[${state.dataAttributes.likeableElement}]`)
         .forEach((likeElement) => {
-            const idToLike = likeElement.getAttribute(state.dataAttributeKey);
+            const idToLike = likeElement.getAttribute(state.dataAttributes.likeableElement);
             if(!idToLike) {
-                console.warn(`better-reviews-like: id is missing from the ${state.dataAttributeKey} attribute`);
+                console.warn(`better-reviews-like: id is missing from the ${state.dataAttributes.likeableElement} attribute`);
                 return;
             }
 
@@ -33,6 +72,10 @@ function setupLikeableElements() {
 function getPersonalLikes() {
     let personalLikes = storage.get(state.localStorageKey);
     return personalLikes ? personalLikes.split(',') : [];
+}
+
+function hasPersonalLikes() {
+    return getPersonalLikes().length ? true : false;
 }
 
 function setPersonalLikes(personalLikes) {
@@ -61,11 +104,11 @@ function removeLike(id) {
 
 function showAsPersonallyLiked(id) {
     document
-        .querySelectorAll(`[${state.dataAttributeKey}="${id}"]`)
+        .querySelectorAll(`[${state.dataAttributes.likeableElement}="${id}"]`)
         .forEach((likeElement) => {
             likeElement
                 .classList
-                .add(state.hasPersonallyLikedClassname)
+                .add(state.classNames.hasPersonallyLiked)
             ;
         })
     ;
@@ -73,28 +116,25 @@ function showAsPersonallyLiked(id) {
 
 function removeAsPersonallyLiked(id) {
     document
-        .querySelectorAll(`[${state.dataAttributeKey}="${id}"]`)
+        .querySelectorAll(`[${state.dataAttributes.likeableElement}="${id}"]`)
         .forEach((likeElement) => {
             likeElement
                 .classList
-                .remove(state.hasPersonallyLikedClassname)
+                .remove(state.classNames.hasPersonallyLiked)
             ;
         })
     ;
 }
 
 function togglePersonalLike(event) {
-    const likeElement = event.target.closest(`[${state.dataAttributeKey}]`);
-    const idToLike = likeElement.getAttribute(state.dataAttributeKey);
-    console.log('Toggling like on ', idToLike);
+    const likeElement = event.target.closest(`[${state.dataAttributes.likeableElement}]`);
+    const idToLike = likeElement.getAttribute(state.dataAttributes.likeableElement);
 
     if(hasPersonallyLiked(idToLike)) {
         removeLike(idToLike);
-        console.log('removed like');
     } else {
         addLike(idToLike);
-        console.log('added like');
     }
 
-    console.log(getPersonalLikes);
+    document.dispatchEvent(new CustomEvent('better-reviews:personal-like-total-changed'));
 }

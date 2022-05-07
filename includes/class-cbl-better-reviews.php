@@ -189,30 +189,10 @@ class Cbl_Better_Reviews {
 		$likes_api        = new Cbl_Better_Reviews_Public_Likes_Api( $this->get_plugin_name(), $this->get_version() );
 		$likes_shortcodes = new Cbl_Better_Reviews_Public_Likes_Shortcodes( $this->get_plugin_name(), $this->get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'rest_api_init', $likes_api, 'register_endpoints' );
+		$this->loader->add_action( 'init', $likes_shortcodes, 'register_filters' );
 		$this->loader->add_action( 'init', $likes_shortcodes, 'register_shortcodes' );
-
-		/*
-		// Add filter to shortcode
-		add_filter('brlikes_filter', array($plugin_public, 'brlikes_filter'), 10);
-
-		// Add filter to shortcode
-		add_filter('brlikestotal_filter', array($plugin_public, 'brlikestotal_filter'), 10);
-
-		// Define function to update likes
-		$this->loader->add_action( 'init', $plugin_public, 'brlikes_update', 10 );
-
-		// Ratings
-		// Add shortcode
-		add_shortcode('brratings', array($plugin_public, 'brratting_shortcode'));
-
-		// Add filter to shortcode
-		add_filter('brratings_filter', array($plugin_public, 'brratings_filter'), 10);
-
-		// Define function to update likes
-		$this->loader->add_action( 'init', $plugin_public, 'brratings_update', 10 );
-		*/
+		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 	}
 
 	/**
