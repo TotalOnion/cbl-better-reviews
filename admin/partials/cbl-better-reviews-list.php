@@ -1,75 +1,72 @@
-
-<div id="<?php echo $type; ?>_field_div">
-	<input type="button" value="Add Subtype" onclick="<?php echo $type; ?>_add_field();">
+<div>
+	<input
+		type="button"
+		class="button-secondary"
+		value="<?php _e('Add a Quality', 'cbl-better-reviews') ?>"
+		onclick="<?php echo $type; ?>_add_field();"
+	/>
+	<table class="table" id="<?php echo $type; ?>_field_container">
+		<?php $this->renderSubtypes( $type, $section_name, $subtypes ); ?>
+	</table>
 </div>
 
-<?php if (!empty($subtypes)) { ?>
-<?php $counter = 0; ?>
-
-<?php foreach ($subtypes as $subtype => $subtype_value) { ?>
-
-	<p id='<?php echo $type; ?>_input_text<?php echo $counter; ?>_wrapper'>
-
-	<?php //print_r($subtype_value); ?>
-
-	<?php foreach ($subtype_value as $key => $value) { ?>
-
-		<input type='text' name='<?php echo $section_name; ?>[subtype][<?php echo $counter; ?>][<?php echo $key; ?>]' value='<?php echo $value; ?>'>
-
-	<?php } ?>
-
-	<input type='button' value='Remove' onclick=remove_field('<?php echo $type; ?>_input_text<?php echo $counter; ?>');>
-
-	</p>
-
-<?php } ?>
-
-
-<?php } ?>
 
 <script>
-
 function <?php echo $type; ?>_add_field() {
-	var total_text=document.getElementsByClassName("<?php echo $type; ?>_input_text");
-	total_text=total_text.length+1;
+	const parent = document.getElementById("<?php echo $type; ?>_field_container");
+	const total_text = parent.querySelectorAll("tr").length;
 
-	var parent = document.getElementById("<?php echo $type; ?>_field_div");
-	const p = document.createElement('p');
-	p.setAttribute("id", "<?php echo $type; ?>_input_text"+total_text+"_wrapper");
-	parent.appendChild(p);
+	const row = document.createElement('tr');
+	parent.appendChild(row);
 
-	const text1 = document.createElement('input');
-	text1.setAttribute("type", "text");
-	text1.setAttribute("name", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype]");
-	text1.setAttribute("class", "<?php echo $type; ?>_input_text");
-	text1.setAttribute("placeholder", "Subtype");
+	const input1 = document.createElement('input');
+	input1.setAttribute("type", "text");
+	input1.setAttribute("name", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype]");
+	input1.setAttribute("class", "regular-text");
+	input1.setAttribute("placeholder", "Label, eg 'Quality'");
+	const cell1 = document.createElement('td');
+	cell1.appendChild(input1);
 
-	const text2 = document.createElement('input');
-	text2.setAttribute("type", "text");
-	text2.setAttribute("name", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype_name]");
-	text2.setAttribute("class", "<?php echo $type; ?>_input_text");
-	text2.setAttribute("placeholder", "Subtype");
+	const input2 = document.createElement('input');
+	input2.setAttribute("type", "text");
+	input2.setAttribute("name", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype_name]");
+	input2.setAttribute("class", "regular-text");
+	input2.setAttribute("placeholder", "Description, eg 'How would you rate the quality?'");
+	const cell2 = document.createElement('td');
+	cell2.appendChild(input2);
 
-	const text3 = document.createElement('input');
-	text3.setAttribute("type", "text");
-	text3.setAttribute("name", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype_text]");
-	text3.setAttribute("class", "<?php echo $type; ?>_input_text");
-	text3.setAttribute("placeholder", "Subtype");
+	const label = document.createElement('label');
+	label.setAttribute("for", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype_required]");
+	label.textContent = 'Required';
+
+	const input3 = document.createElement('input');
+	input3.setAttribute("type", "checkbox");
+	input3.setAttribute("name", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype_required]");
+	input3.setAttribute("value", 1);
+
+	const cell3 = document.createElement('td');
+	cell3.appendChild(label);
+	cell3.appendChild(input3);
 
 	const button = document.createElement('BUTTON');
 	var button_text = document.createTextNode("Remove");
   	button.appendChild(button_text);
-	button.setAttribute("onclick", "remove_field('<?php echo $type; ?>_input_text"+total_text+"');");
+	button.classList.add("button-secondary");
+    button.addEventListener('click', (event) => {
+		const rowToRemove = event.target.closest('tr');
+		rowToRemove.parentNode.removeChild(rowToRemove);
+	});
+	const cell4 = document.createElement('td');
+	cell4.appendChild(button);
 
-	p.appendChild(text1);
-	p.appendChild(text2);
-	p.appendChild(text3);
-	p.appendChild(button);
+	row.appendChild(cell1);
+	row.appendChild(cell2);
+	row.appendChild(cell3);
+	row.appendChild(cell4);
 }
 
-function remove_field(id) {
-
-	document.getElementById(id+"_wrapper").outerHTML="";
+function cblbr_remove_field(targetId) {
+	const rowToRemove = document.getElementById(targetId);
+	rowToRemove.parentNode.removeChild(rowToRemove);
 }
-
 </script>

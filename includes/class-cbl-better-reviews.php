@@ -127,6 +127,7 @@ class Cbl_Better_Reviews {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-api.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-shortcodes.php';
 
 		$this->loader = new Cbl_Better_Reviews_Loader();
 
@@ -179,21 +180,18 @@ class Cbl_Better_Reviews {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public = new Cbl_Better_Reviews_Public( $this->get_plugin_name(), $this->get_version() );
-
-		$likes_api = new Cbl_Better_Reviews_Public_Api( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public    = new Cbl_Better_Reviews_Public( $this->get_plugin_name(), $this->get_version() );
+		$likes_api        = new Cbl_Better_Reviews_Public_Api( $this->get_plugin_name(), $this->get_version() );
+		$likes_shortcodes = new Cbl_Better_Reviews_Public_Likes_Shortcodes( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
 		$this->loader->add_action( 'rest_api_init', $likes_api, 'register_endpoints' );
+		$this->loader->add_action( 'init', $likes_shortcodes, 'register_shortcodes' );
 
 		// Likes
 
 		// Add shortcode
-		add_shortcode('brlikes', array($plugin_public, 'brlikes_shortcode'));
-
-		// Add total likes shortcode
-		add_shortcode('brlikestotal', array($plugin_public, 'brlikestotal_shortcode'));
+		
 
 		// Add filter to shortcode
 		add_filter('brlikes_filter', array($plugin_public, 'brlikes_filter'), 10);
@@ -205,7 +203,6 @@ class Cbl_Better_Reviews {
 		$this->loader->add_action( 'init', $plugin_public, 'brlikes_update', 10 );
 
 		// Ratings
-
 		// Add shortcode
 		add_shortcode('brratings', array($plugin_public, 'brratting_shortcode'));
 

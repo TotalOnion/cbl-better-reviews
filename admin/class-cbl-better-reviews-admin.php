@@ -152,7 +152,8 @@ class Cbl_Better_Reviews_Admin {
 	/**
 	* Render checkboxes on the settings page
 	*/
-	public function render_checkboxes($array) {
+	public function render_checkboxes($array)
+	{
 		$section_name = $this->plugin_name. '_posts_settings';
 
 		$options = get_option($section_name);
@@ -180,13 +181,16 @@ class Cbl_Better_Reviews_Admin {
 	/**
 	* Add fields for the posts
 	*/
-	public function add_sub_post_fields() {
-
+	public function add_sub_post_fields()
+	{
 		$section_name = $this->plugin_name. '_posts_settings';
 
-		$options = get_option($section_name);
+		$options = get_option( $section_name );
+		if ( !$options ) {
+			return;
+		}
 
-		foreach ($options as $type => $value) {
+		foreach ( $options as $type => $value ) {
 
 			$post_section_group = $this->plugin_name.'_settings';
 			$post_section_name = $this->plugin_name.'_'.$type;
@@ -202,7 +206,7 @@ class Cbl_Better_Reviews_Admin {
 				$post_section_name,
 				array(
 					'type'         => 'string',
-					'description'  => __( 'Post Types that can have a review', $this->plugin_name),
+					'description'  => __( 'Post Types that can be reviewed', 'cbl-better-reviews'),
 					'show_in_rest' => false,
 					'default'      => '',
 				)
@@ -222,7 +226,8 @@ class Cbl_Better_Reviews_Admin {
 	/**
 	* Add the post settings fields
 	*/
-	public function add_post_settings_fields($section_name, $settings_section, $section_group, $type) {
+	public function add_post_settings_fields($section_name, $settings_section, $section_group, $type)
+	{
 
 		$post_type_obj = get_post_type_object($type);
 		$label = $post_type_obj->labels->name;
@@ -239,55 +244,159 @@ class Cbl_Better_Reviews_Admin {
 
 
 	/**
-	* Render the post settings fields
-	*/
-	public function render_post_fields($array) {
-		$section_name = $array[0];
-		$type = $array[1];
-		$options = get_option($section_name);
+	 * Render the post settings fields
+	 */
+	public function render_post_fields( $array ) {
+		list( $section_name, $type ) = $array;
+		$options = get_option( $section_name );
 
 		if (isset($options['subtype'])) {
 			$subtypes = $options['subtype'];
 		}
 
+		$html = '<table class="table">';
+
 		$fields = $this->get_post_fields();
+		foreach ( $fields as $field_name => $field_value ) {
 
-		foreach ($fields as $field_name => $field_value) {
-
-			if (!empty($options)) {
-				if (array_key_exists($field_value, $options)) {
-					$field_text = $options[$field_value];
+			if ( !empty( $options ) ) {
+				if ( array_key_exists( $field_value, $options ) ) {
+					$field_text = $options[ $field_value ];
 				}
 			}
 
-			include __DIR__ . '/partials/cbl-better-reviews-text.php';
+			$html .= <<<EOS
+				<tr>
+					<td>
+						<label for="{$section_name}[{$field_value}]">{$field_name}</label>
+					</td>
+					<td>
+						<input
+							type="text"
+							class="regular-text"
+							name="{$section_name}[{$field_value}]"
+							value="{$field_text}"
+							placeholder="{$field_name}"
+						/>
+					</td>
+				</tr>		
+EOS;
 		}
 
-		include __DIR__ . '/partials/cbl-better-reviews-list.php';
+		$html .= '</table>';
+		echo $html;
 
+		include __DIR__ . '/partials/cbl-better-reviews-list.php';
+	}
+
+	private function renderSubtypes(
+		string $type,
+		string $section_name,
+		?array $subtypes = []
+	) {
+		if ( empty( $subtypes ) ) {
+			return;
+		}
+
+		$counter = 0;
+		$html = '';
+	
+		foreach ( $subtypes as $subtype ) {
+			$subtype_label_input = sprintf(
+				'<input
+					type="text"
+					name="%s[subtype][%d][%s_subtype]"
+					class="regular-text"
+					placeholder="Label, eg \'Quality\'"
+					value="%s"
+				>',
+				$section_name,
+				$counter,
+				$type,
+				$subtype[ $type . '_subtype' ]
+			);
+
+			$subtype_description_input = sprintf(
+				'<input
+					type="text"
+					name="%s[subtype][%d][%s_subtype_name]"
+					class="regular-text"
+					placeholder="Description, eg \'How would you rate the quality?\'"
+					value="%s"
+				>',
+				$section_name,
+				$counter,
+				$type,
+				$subtype[ $type . '_subtype_name' ]
+			);
+
+			$subtype_required_fieldname = sprintf(
+				'%s[subtype][%d][%s_subtype_required]',
+				$section_name,
+				$counter,
+				$type
+			);
+
+			$subtype_required_input = sprintf(
+				'<label for="%s">Required</label>
+				<input type="checkbox" name="%s" value="1" %s>',
+				$subtype_required_fieldname,
+				$subtype_required_fieldname,
+				$subtype[ $type . '_subtype_required' ] ? 'checked="checked"' : ''
+			);
+
+			$remove_label = __( 'Remove', 'cbl-better-reviews' );
+			$container_id = sprintf(
+				'%s_%d',
+				$section_name,
+				$counter
+			);
+
+			$html .= <<<EOS
+				<tr id="$container_id">
+					<td>
+						$subtype_label_input
+					</td>
+					<td>
+						$subtype_description_input
+					</td>
+					<td>
+					$subtype_required_input
+					</td>
+					<td>
+						<button
+							class="button-secondary"
+							onclick="cblbr_remove_field('$container_id')"
+						>
+							$remove_label
+						</button>
+					</td>
+				</tr>
+EOS;
+			$counter++;
+		}
+
+		echo $html;
 	}
 
 	/**
-	* List of fields to return
-	*/
+	 * List of fields to return
+	 */
 	private function get_post_fields() {
 
-		// These all need to be translatable, not sure this is the best way of doing this but will revisit
-
 		$fields = array(
-				__( 'Review Label', $this->plugin_name) => 'review_label',
-				__( 'Average Score Label', $this->plugin_name) => 'average_score_label',
-				__( 'CTA Label', $this->plugin_name) => 'cta_label'
+			__( 'Review Label', 'cbl-better-reviews') => 'review_label',
+			__( 'Average Score Label', 'cbl-better-reviews') => 'average_score_label',
+			__( 'CTA Label', 'cbl-better-reviews') => 'cta_label'
 		);
 
 		return $fields;
 	}
 
 	/**
-	* Update the option when form is submitted
-	*/
+	 * Update the option when form is submitted
+	 */
 	public function update_settings() {
 		register_setting($this->plugin_name, $this->plugin_name);
 	}
-
 }

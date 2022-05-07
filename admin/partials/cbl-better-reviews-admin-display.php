@@ -24,15 +24,13 @@
 		?>
 	</form>
 
-	<h2>Post Type Fields</h2>
+	<h2>Review settings for each Post Type</h2>
 	<form method="post" action="options.php">
-
 		<?php
 			$post_section_group = $this->plugin_name.'_settings';
 			settings_fields($post_section_group);
 			do_settings_sections($post_section_group);
 			submit_button();
 		?>
-
 	</form>
 </div>
