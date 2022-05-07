@@ -14,7 +14,7 @@ const state = {
     },
 };
 
-export default function likes() {
+function init() {
     // Add the click handler to likeable items, and set whether they have been Liked by the current user
     setupLikeableElements();
 
@@ -138,3 +138,9 @@ function togglePersonalLike(event) {
 
     document.dispatchEvent(new CustomEvent('better-reviews:personal-like-total-changed'));
 }
+
+const likes = {
+    init: init
+};
+
+export default likes;
