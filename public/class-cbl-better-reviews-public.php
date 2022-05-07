@@ -63,30 +63,14 @@ class Cbl_Better_Reviews_Public {
 
 		wp_enqueue_script(
 			$this->plugin_name,
-			plugin_dir_url( __FILE__ ) . 'js/cbl-better-reviews-public.js',
+			plugin_dir_url( __FILE__ ) . 'dist/main.js',
 			[],
 			$this->version,
 			true
 		);
 	}
 
-	/**
-	* Br_likes shortcode
-	*/
-	public function brlikes_shortcode($atts = []) {
-		$type_array = array();
-		$output = '';
-		$post_id = get_the_ID();
-
-		// Get the attributes, not sure what we need here yet
-		$attributes = shortcode_atts([
-			'id' => null
-		], $atts, 'brlikes');
-
-		// Return likes code
-		return apply_filters('brlikes_filter', $post_id);
-
-	}
+	
 
 	/**
 	* Br_likes totoal shortcode

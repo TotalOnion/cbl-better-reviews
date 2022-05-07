@@ -1,0 +1,16 @@
+{
+  "name": "cbl-better-reviews",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+    "scripts": {
+      "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "devDependencies": {
+        "webpack": "^5.33.2",
+        "webpack-cli": "^4.6.0"
+    }
+  }

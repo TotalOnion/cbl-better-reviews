@@ -122,11 +122,16 @@ class Cbl_Better_Reviews {
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cbl-better-reviews-admin.php';
 
 		/**
+		 * Models for Like and Reviews
+		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cbl-better-reviews-like.php';
+
+		/**
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public.php';
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-api.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-api.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-shortcodes.php';
 
 		$this->loader = new Cbl_Better_Reviews_Loader();
@@ -181,18 +186,14 @@ class Cbl_Better_Reviews {
 	private function define_public_hooks() {
 
 		$plugin_public    = new Cbl_Better_Reviews_Public( $this->get_plugin_name(), $this->get_version() );
-		$likes_api        = new Cbl_Better_Reviews_Public_Api( $this->get_plugin_name(), $this->get_version() );
+		$likes_api        = new Cbl_Better_Reviews_Public_Likes_Api( $this->get_plugin_name(), $this->get_version() );
 		$likes_shortcodes = new Cbl_Better_Reviews_Public_Likes_Shortcodes( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_action( 'rest_api_init', $likes_api, 'register_endpoints' );
 		$this->loader->add_action( 'init', $likes_shortcodes, 'register_shortcodes' );
 
-		// Likes
-
-		// Add shortcode
-		
-
+		/*
 		// Add filter to shortcode
 		add_filter('brlikes_filter', array($plugin_public, 'brlikes_filter'), 10);
 
@@ -211,7 +212,7 @@ class Cbl_Better_Reviews {
 
 		// Define function to update likes
 		$this->loader->add_action( 'init', $plugin_public, 'brratings_update', 10 );
-
+		*/
 	}
 
 	/**

@@ -12,8 +12,10 @@
  */
 class Cbl_Better_Reviews_Like {
 
-	private $post_id;
-	private $likes = 0;
+	private const POST_META_KEY = 'cbl-better-reviews_likes';
+
+	private int $post_id;
+	private int $likes = 0;
 
 	public function __construct( int $post_id ) {
 		$this->post_id = $post_id;
@@ -26,11 +28,25 @@ class Cbl_Better_Reviews_Like {
 	* @since    1.0.0
 	* @access   private
 	*/
-	private function load() {
-		$this->likes = (int)get_post_meta( $this->post_id, 'cbl-better-reviews_likes', true );
+	private function load()
+	{
+		$this->likes = (int)get_post_meta( $this->post_id, self::POST_META_KEY, true );
 
 		// **TODO**: We need to load the localisations of this post, and add the likes together
 		// if we are on a multilingual site.
+	}
+
+	public function increment()
+	{
+		update_post_meta( $this->post_id, self::POST_META_KEY, ++$this->likes );
+	}
+
+	public function decrement()
+	{
+		if( $this->likes <= 0 ) {
+			return;
+		}
+		update_post_meta( $this->post_id, self::POST_META_KEY, --$this->likes );
 	}
 
 	/**
@@ -45,8 +61,9 @@ class Cbl_Better_Reviews_Like {
 		$object->id = '';
 		$object->likes = $this->likes;
 		return [
-			'id'    => $this->post_id,
-			'likes' => $this->likes,
+			'id'        => $this->post_id,
+			'likes'     => $this->likes,
+			'post_type' => get_post_type($this->post_id),
 		];
 	}
 }

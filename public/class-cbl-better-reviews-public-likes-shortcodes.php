@@ -45,9 +45,7 @@ class Cbl_Better_Reviews_Public_Likes_Shortcodes {
 	}
 
     public function register_shortcodes() {
-        add_shortcode( 'better-reviews-likes', array( $this, 'render_likes_icon' ) );
-
-		//add_shortcode('brlikestotal', array($plugin_public, 'brlikestotal_shortcode'));
+        add_shortcode( 'better-reviews-like', array( $this, 'render_like_icon' ) );
     }
 
     public function display_like_icon() {
@@ -55,22 +53,23 @@ class Cbl_Better_Reviews_Public_Likes_Shortcodes {
     }
 
     /**
-	* Br_likes shortcode
-	*/
-	public function render_likes_icon( $atts = [] ) {
-        return '<div data-better-reviews-like class="better-reviews__like></div>';
-        /*
-		$type_array = array();
-		$output = '';
-		$post_id = get_the_ID();
+	 * Render a single Like icon. If no 'id' attribute is passed in then the current page ID is used
+	 */
+	public function render_like_icon( $attributes )
+    {
+        // If attributes are not set they come in as an empty string when using twig.
+        if ( ! is_array( $attributes ) ) {
+            $attributes = [];
+        }
 
-		// Get the attributes, not sure what we need here yet
-		$attributes = shortcode_atts([
-			'id' => null
-		], $atts, 'brlikes');
+        $attributes[ 'id' ] = $attributes[ 'id' ] ?? get_the_ID();
 
-		// Return likes code
-		return apply_filters('brlikes_filter', $post_id);
-        */
+        return <<<EOS
+            <div class="better-reviews__like" data-better-reviews-like="{$attributes['id']}">
+                <svg width="20" height="19" viewBox="0 0 20 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M14.5 0C12.76 0 11.09 0.81 10 2.09C8.91 0.81 7.24 0 5.5 0C2.42 0 0 2.42 0 5.5C0 9.28 3.4 12.36 8.55 17.04L10 18.35L11.45 17.03C16.6 12.36 20 9.28 20 5.5C20 2.42 17.58 0 14.5 0ZM10.1 15.55L10 15.65L9.9 15.55C5.14 11.24 2 8.39 2 5.5C2 3.5 3.5 2 5.5 2C7.04 2 8.54 2.99 9.07 4.36H10.94C11.46 2.99 12.96 2 14.5 2C16.5 2 18 3.5 18 5.5C18 8.39 14.86 11.24 10.1 15.55Z" fill="white"></path>
+                </svg>
+            </div>
+EOS;
 	}
 }
