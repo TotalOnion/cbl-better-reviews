@@ -44,6 +44,21 @@ class Cbl_Better_Reviews_Public_Likes_Shortcodes {
 		$this->version = $version;
 	}
 
+	/**
+	 * Register the JavaScript for the public-facing side of the site.
+	 *
+	 * @since    1.0.0
+	 */
+	public function enqueue_scripts() {
+		wp_enqueue_script(
+			$this->plugin_name,
+			plugin_dir_url( __FILE__ ) . 'dist/likes.js',
+			[],
+			$this->version,
+			true
+		);
+	}
+
     public function register_shortcodes() {
         add_shortcode( 'better-reviews-like', array( $this, 'render_like_icon' ) );
 		add_shortcode( 'better-reviews-personal-likes', array( $this, 'render_personal_likes_icon' ) );

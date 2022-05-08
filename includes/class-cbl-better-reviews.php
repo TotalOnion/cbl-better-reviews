@@ -120,6 +120,7 @@ class Cbl_Better_Reviews {
 		 * The class responsible for defining all actions that occur in the admin area.
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cbl-better-reviews-admin.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-cbl-better-reviews-admin-reviews-block.php';
 
 		/**
 		 * Models for Like and Reviews
@@ -130,9 +131,9 @@ class Cbl_Better_Reviews {
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
-		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-api.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-shortcodes.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-reviews-block.php';
 
 		$this->loader = new Cbl_Better_Reviews_Loader();
 
@@ -165,6 +166,7 @@ class Cbl_Better_Reviews {
 	private function define_admin_hooks() {
 
 		$admin = new Cbl_Better_Reviews_Admin( $this->get_plugin_name(), $this->get_version() );
+		$block = new Cbl_Better_Reviews_Admin_Reviews_Block( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'admin_menu', $admin, 'add_admin_menu' );
 
@@ -174,6 +176,16 @@ class Cbl_Better_Reviews {
 		// Save/Update our plugin options
 		$this->loader->add_action('admin_init', $admin, 'update_settings');
 
+		// Register the block
+		$this->loader->add_action( 'admin_enqueue_scripts', $block, 'enqueue_scripts' );
+		$this->loader->add_action( 'init', $block, 'register_block' );
+
+		// Add bazaar block to allowed blocks
+		if ( has_filter( 'allowed_block_types_all' ) ) {
+			$this->loader->add_filter( 'allowed_block_types_all', $block, 'filter_allowed_block_types', 1000, 2);
+		} else {
+			$this->loader->add_filter( 'allowed_block_types', $block, 'filter_allowed_block_types', 1000, 2);
+		}
 	}
 
 	/**
@@ -185,14 +197,17 @@ class Cbl_Better_Reviews {
 	 */
 	private function define_public_hooks() {
 
-		$plugin_public    = new Cbl_Better_Reviews_Public( $this->get_plugin_name(), $this->get_version() );
 		$likes_api        = new Cbl_Better_Reviews_Public_Likes_Api( $this->get_plugin_name(), $this->get_version() );
 		$likes_shortcodes = new Cbl_Better_Reviews_Public_Likes_Shortcodes( $this->get_plugin_name(), $this->get_version() );
+		$reviews_block    = new Cbl_Better_Reviews_Public_Reviews_Block( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'rest_api_init', $likes_api, 'register_endpoints' );
 		$this->loader->add_action( 'init', $likes_shortcodes, 'register_filters' );
 		$this->loader->add_action( 'init', $likes_shortcodes, 'register_shortcodes' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $likes_shortcodes, 'enqueue_scripts' );
+
+		$this->loader->add_action( 'init', $reviews_block, 'setup' );
+		$this->loader->add_action( 'wp_enqueue_scripts', $reviews_block, 'enqueue_scripts' );
 	}
 
 	/**

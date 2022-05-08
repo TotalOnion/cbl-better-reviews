@@ -19,12 +19,18 @@ function <?php echo $type; ?>_add_field() {
 	const row = document.createElement('tr');
 	parent.appendChild(row);
 
+	const id_input = document.createElement('input');
+	id_input.setAttribute("type", "hidden");
+	id_input.setAttribute("name", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype_id]");
+	id_input.setAttribute("value", self.crypto.randomUUID());
+
 	const input1 = document.createElement('input');
 	input1.setAttribute("type", "text");
 	input1.setAttribute("name", "<?php echo $section_name; ?>[subtype]["+total_text+"][<?php echo $type; ?>_subtype]");
 	input1.setAttribute("class", "regular-text");
 	input1.setAttribute("placeholder", "Label, eg 'Quality'");
 	const cell1 = document.createElement('td');
+	cell1.appendChild(id_input);
 	cell1.appendChild(input1);
 
 	const input2 = document.createElement('input');

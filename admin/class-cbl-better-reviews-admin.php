@@ -257,18 +257,16 @@ class Cbl_Better_Reviews_Admin {
 		$html = '<table class="table">';
 
 		$fields = $this->get_post_fields();
-		foreach ( $fields as $field_name => $field_value ) {
+		foreach ( $fields as $field_value => $field_options ) {
 
-			if ( !empty( $options ) ) {
-				if ( array_key_exists( $field_value, $options ) ) {
-					$field_text = $options[ $field_value ];
-				}
-			}
+			$field_text = $options[ $field_value ] ?? '';
+
+			$explanation = $field_options['explanation'] ? "<p>{$field_options['explanation']}</p>" : '';
 
 			$html .= <<<EOS
 				<tr>
 					<td>
-						<label for="{$section_name}[{$field_value}]">{$field_name}</label>
+						<label for="{$section_name}[{$field_value}]">{$field_options['label']}</label>
 					</td>
 					<td>
 						<input
@@ -276,8 +274,9 @@ class Cbl_Better_Reviews_Admin {
 							class="regular-text"
 							name="{$section_name}[{$field_value}]"
 							value="{$field_text}"
-							placeholder="{$field_name}"
+							placeholder="{$field_options['placeholder']}"
 						/>
+						$explanation
 					</td>
 				</tr>		
 EOS;
@@ -302,6 +301,18 @@ EOS;
 		$html = '';
 	
 		foreach ( $subtypes as $subtype ) {
+			$subtype_id_input = sprintf(
+				'<input
+					type="hidden"
+					name="%s[subtype][%d][%s_subtype_id]"
+					value="%s"
+				>',
+				$section_name,
+				$counter,
+				$type,
+				$subtype[ $type . '_subtype_id' ]
+			);
+
 			$subtype_label_input = sprintf(
 				'<input
 					type="text"
@@ -355,6 +366,7 @@ EOS;
 			$html .= <<<EOS
 				<tr id="$container_id">
 					<td>
+						$subtype_id_input
 						$subtype_label_input
 					</td>
 					<td>
@@ -385,9 +397,72 @@ EOS;
 	private function get_post_fields() {
 
 		$fields = array(
-			__( 'Review Label', 'cbl-better-reviews') => 'review_label',
-			__( 'Average Score Label', 'cbl-better-reviews') => 'average_score_label',
-			__( 'CTA Label', 'cbl-better-reviews') => 'cta_label'
+			'review_label' => array(
+				'label' => __(
+					'Review Title',
+					'cbl-better-reviews-admin'
+				),
+				'placeholder' => __(
+					'Reviews',
+					'cbl-better-reviews-admin'
+				),
+				'explanation' => __(
+					'Used at the top of the "full" review block, so something like "Reviews" is fine',
+					'cbl-better-reviews-admin'
+				),
+			),
+			'average_score_label' => array(
+				'label' => __(
+					'Average Score Label',
+					'cbl-better-reviews-admin'
+				),
+				'placeholder' => __(
+					'Avergae',
+					'cbl-better-reviews-admin'
+				),
+				'explanation' =>  __(
+					'Used in the "full" review block, so something like "Average" is fine',
+					'cbl-better-reviews-admin'
+				),
+			),
+			'cta_label' => array(
+				'label' => __(
+					'CTA Label',
+					'cbl-better-reviews'
+				),
+				'placeholder' =>  __(
+					'Review This Product',
+					'cbl-better-reviews-admin'
+				),
+			),
+			'review_count' => array(
+				'label' => __(
+					'Review count label',
+					'cbl-better-reviews'
+				),
+				'placeholder' =>  __(
+					'Reviews',
+					'cbl-better-reviews-admin'
+				),
+				'explanation' =>  __(
+					'used in sentences like "1.1M Reviews" or "2K Votes"',
+					'cbl-better-reviews-admin'
+				),
+			),
+			'review_submit_label' => array(
+				'label' => __(
+					'Review submit label',
+					'cbl-better-reviews'
+				),
+				'placeholder' =>  __(
+					'Submit',
+					'cbl-better-reviews-admin'
+				),
+				'explanation' =>  __(
+					'used in the review modal so "Submit" or "Vote" is good here',
+					'cbl-better-reviews-admin'
+				),
+			)
 		);
 
 		return $fields;

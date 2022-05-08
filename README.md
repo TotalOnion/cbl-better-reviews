@@ -52,3 +52,8 @@ Include the total number of things they have liked using a shortcode:
 ```
 [better-reviews-personal-likes display="totalLikes"]
 ```
+
+## Rating
+
+### How to do stars in css
+https://codepen.io/andreacrawford/pen/NvqJXW

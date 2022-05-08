@@ -36,6 +36,9 @@ if ( ! defined( 'WPINC' ) ) {
  * Rename this for your plugin and update it as you release new versions.
  */
 define( 'CBL_BETTER_REVIEWS_VERSION', '1.0.0' );
+define( 'CBL_BETTER_REVIEWS_NAME', 'cbl-better-reviews' );
+define( 'CBL_BETTER_REVIEWS_SLUG', 'cbl-better-reviews' );
+define( 'CBL_BETTER_REVIEWS_TEXT_DOMAIN', 'cbl-better-reviews' );
 
 /**
  * The code that runs during plugin activation.

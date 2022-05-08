@@ -10,13 +10,13 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./public/src/index.js":
+/***/ "./public/src/likes.js":
 /*!*****************************!*\
-  !*** ./public/src/index.js ***!
+  !*** ./public/src/likes.js ***!
   \*****************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _modules_likes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/likes */ \"./public/src/modules/likes.js\");\n\n\nwindow.addEventListener('DOMContentLoaded', () => {\n\t_modules_likes__WEBPACK_IMPORTED_MODULE_0__[\"default\"].init();\n});\n\n\n//# sourceURL=webpack://cbl-better-reviews/./public/src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _modules_likes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/likes */ \"./public/src/modules/likes.js\");\n\n\nwindow.addEventListener('DOMContentLoaded', () => {\n\t_modules_likes__WEBPACK_IMPORTED_MODULE_0__[\"default\"].init();\n});\n\n\n//# sourceURL=webpack://cbl-better-reviews/./public/src/likes.js?");
 
 /***/ }),
 
@@ -93,7 +93,7 @@ eval("__webpack_require__.r(__webpack_exports__);\nconst storage = {\n    get: (
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./public/src/index.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./public/src/likes.js");
 /******/ 	
 /******/ })()
 ;
