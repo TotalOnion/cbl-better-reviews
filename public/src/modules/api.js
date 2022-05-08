@@ -31,6 +31,13 @@ const api = {
             `${state.baseApiEndpoint}/unlike`,
             Array.isArray(idsToLike) ? idsToLike : [idsToLike]
         );
+    },
+    review: (id, data, successCallback, errorCallback) => {
+        postData(
+            `${state.baseApiEndpoint}/review/${id}`,
+            data
+        )
+        .then(successCallback, errorCallback);
     }
 };
 

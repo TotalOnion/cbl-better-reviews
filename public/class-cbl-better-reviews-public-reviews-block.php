@@ -356,10 +356,10 @@ EOS;
 			);
 
 			$subcriteria_id = $subcriteria[ $attributes['post_type'] . '_subtype_id' ];
-			$field_name = 'rating_' . $subcriteria_id;
+			$field_name = $subcriteria_id;
 
 			$subcriteria_html .= <<<EOS
-				<div class="better-reviews__modal-subcriteria" data-better-reviews-subcriteria-id="{$subcriteria_id}">
+				<div class="better-reviews__modal-subcriteria">
 					<h4 class="better-reviews__subcriteria-label">
 						{$subcriteria_label}
 					</h4>
@@ -373,7 +373,7 @@ EOS;
 						<label aria-label="2 stars" class="rating__label" for="{$field_name}-20"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
 						<input class="rating__input" name="{$field_name}" id="{$field_name}-20" value="2" type="radio">
 						<label aria-label="2.5 stars" class="rating__label rating__label--half" for="{$field_name}-25"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-25" value="2.5" type="radio" checked>
+						<input class="rating__input" name="{$field_name}" id="{$field_name}-25" value="2.5" type="radio">
 						<label aria-label="3 stars" class="rating__label" for="{$field_name}-30"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
 						<input class="rating__input" name="{$field_name}" id="{$field_name}-30" value="3" type="radio">
 						<label aria-label="3.5 stars" class="rating__label rating__label--half" for="{$field_name}-35"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
@@ -394,8 +394,8 @@ EOS;
 
 		$html = <<<EOS
 			<template>
-				<form class="better-reviews__modal" data-better-reviews-modal-review-id="{$attributes['post_id']}">
-					<div class="better-reviews__modal-inner">
+				<div class="better-reviews__modal" data-better-reviews-modal-review-id="{$attributes['post_id']}" style="margin-top:20vh;">
+					<form class="better-reviews__modal-inner">
 						<span class="better-reviews__modal-close" data-better-reviews-modal-toggle="close">x</span>
 						<div class="better-reviews__modal-content">
 							{$subcriteria_html}
@@ -403,8 +403,8 @@ EOS;
 								{$submit_label}
 							</button>
 						</div>
-					</div>
-				</form>
+					</form>
+				</div>
 			</template>
 EOS;
 
