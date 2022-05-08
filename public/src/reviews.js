@@ -1,5 +1,5 @@
-import reviews from './modules/reviews';
+import reviewModal from './modules/review-modal';
 
 window.addEventListener('DOMContentLoaded', () => {
-	reviews.init();
+	reviewModal.init();
 });

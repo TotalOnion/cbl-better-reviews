@@ -20,13 +20,13 @@ eval("__webpack_require__.r(__webpack_exports__);\nconst state = {\n    baseApiE
 
 /***/ }),
 
-/***/ "./public/src/modules/reviews.js":
-/*!***************************************!*\
-  !*** ./public/src/modules/reviews.js ***!
-  \***************************************/
+/***/ "./public/src/modules/review-modal.js":
+/*!********************************************!*\
+  !*** ./public/src/modules/review-modal.js ***!
+  \********************************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./storage */ \"./public/src/modules/storage.js\");\n/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./api */ \"./public/src/modules/api.js\");\n\n\n\nconst state = {\n    localStorageKey: 'better-reviews-likes',\n    dataAttributes: {\n        likeableElement: 'data-better-reviews-like',\n        personalLikesIcon: 'data-better-reviews-personal-likes',\n        personalLikesTotal: 'data-better-reviews-personal-likes-total',\n    },\n    classNames: {\n        hasPersonallyLiked: 'better-reviews__has-personally-liked',\n        hasPersonalLikes: 'better-reviews__has-personal-likes'\n    },\n};\n\nfunction init() {\n    console.log(' -- starting reviews js');\n}\n\nconst reviews = {\n    init: init\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (reviews);\n\n\n//# sourceURL=webpack://cbl-better-reviews/./public/src/modules/reviews.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _storage__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./storage */ \"./public/src/modules/storage.js\");\n/* harmony import */ var _api__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./api */ \"./public/src/modules/api.js\");\n\n\n\nconst state = {\n    localStorageKey: 'better-reviews-my-reviews',\n    dataAttributes: {\n        modalToggle: 'data-better-reviews-modal-toggle',\n        reviewContainer: 'data-better-reviews-review-id'\n    },\n    classNames: {\n        modalIsOpenBodyClass: 'better-reviews__modal-is-open',\n        hasPersonallyLiked: 'better-reviews__has-personally-reviewed'\n    },\n};\n\nfunction init() {\n    console.log(' -- starting reviews js');\n    document\n        .querySelectorAll(`[${state.dataAttributes.modalToggle}]`)\n        .forEach((toggleElement) => {\n            toggleElement.addEventListener('click', toggleModal, { passive: true });\n        })\n    ;\n}\n\nfunction toggleModal(event) {\n    console.log('toggling modal');\n    const openOrClose = event.target.getAttribute(state.dataAttributes.modalToggle);\n    \n    switch (openOrClose) {\n        case 'close': {\n            closeModal(event);\n            return;\n        }\n        \n        case 'open': {\n            openModal(event);\n            return;\n        }\n\n        default: {\n            console.error(' -- Unknown toggleModal value');\n        }\n    }\n\n\n    \n}\n\nfunction closeModal(event) {\n    document.body.classList.remove(state.classNames.modalIsOpenBodyClass);\n}\n\nfunction openModal(event) {\n    // clone the template and add it to the body\n    const template = event.target.closest(`[${state.dataAttributes.reviewContainer}]`).querySelector('template');\n    if (!template) {\n        console.error(' -- No modal template found.');\n        return;\n    }\n    document.body.prepend(template.content.firstElementChild);\n    document.body.classList.add(state.classNames.modalIsOpenBodyClass);\n\n    // Add a class to the body so we know the modal is open\n\n    window.test = template;\n    console.log(template);\n}\n\nconst reviews = {\n    init: init\n};\n\n/* harmony default export */ __webpack_exports__[\"default\"] = (reviews);\n\n\n//# sourceURL=webpack://cbl-better-reviews/./public/src/modules/review-modal.js?");
 
 /***/ }),
 
@@ -46,7 +46,7 @@ eval("__webpack_require__.r(__webpack_exports__);\nconst storage = {\n    get: (
   \*******************************/
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _modules_reviews__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/reviews */ \"./public/src/modules/reviews.js\");\n\n\nwindow.addEventListener('DOMContentLoaded', () => {\n\t_modules_reviews__WEBPACK_IMPORTED_MODULE_0__[\"default\"].init();\n});\n\n\n//# sourceURL=webpack://cbl-better-reviews/./public/src/reviews.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _modules_review_modal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./modules/review-modal */ \"./public/src/modules/review-modal.js\");\n\n\nwindow.addEventListener('DOMContentLoaded', () => {\n\t_modules_review_modal__WEBPACK_IMPORTED_MODULE_0__[\"default\"].init();\n});\n\n\n//# sourceURL=webpack://cbl-better-reviews/./public/src/reviews.js?");
 
 /***/ })
 

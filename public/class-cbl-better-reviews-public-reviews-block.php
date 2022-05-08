@@ -240,7 +240,7 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 						<div class="better-reviews__cta-container">
 							<button
 								class="better-reviews__cta"
-								data-better-reviews-modal-toggle
+								data-better-reviews-modal-toggle="open"
 							>{$cta_label}</button>
 						</div>
 						{$review_modal_html}
@@ -360,15 +360,10 @@ EOS;
 
 			$subcriteria_html .= <<<EOS
 				<div class="better-reviews__modal-subcriteria" data-better-reviews-subcriteria-id="{$subcriteria_id}">
-					<h4
-						class="better-reviews__subcriteria-label"
-					>
+					<h4 class="better-reviews__subcriteria-label">
 						{$subcriteria_label}
 					</h4>
-					<div
-						class="better-reviews__subcriteria-stars"
-						data-better-reviews-modal-subcriteria-stars
-					>
+					<div class="better-reviews__subcriteria-stars" data-better-reviews-modal-subcriteria-stars>
 						<label aria-label="0.5 stars" class="rating__label rating__label--half" for="{$field_name}-05"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
 						<input class="rating__input" name="{$field_name}" id="{$field_name}-05" value="0.5" type="radio">
 						<label aria-label="1 star" class="rating__label" for="{$field_name}-10"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
@@ -399,20 +394,17 @@ EOS;
 
 		$html = <<<EOS
 			<template>
-				<div class="better-reviews__modal" data-better-reviews-modal-review-id="{$attributes['post_id']}">
+				<form class="better-reviews__modal" data-better-reviews-modal-review-id="{$attributes['post_id']}">
 					<div class="better-reviews__modal-inner">
-						<span class="better-reviews__modal-close" data-better-reviews-modal-toggle>x</span>
+						<span class="better-reviews__modal-close" data-better-reviews-modal-toggle="close">x</span>
 						<div class="better-reviews__modal-content">
 							{$subcriteria_html}
-							<button
-								class="better-reviews__modal-submit"
-								data-better-reviews-modal-submit
-							>
+							<button class="better-reviews__modal-submit" data-better-reviews-modal-submit>
 								{$submit_label}
 							</button>
 						</div>
 					</div>
-				</div>
+				</form>
 			</template>
 EOS;
 
