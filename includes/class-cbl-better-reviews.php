@@ -125,6 +125,7 @@ class Cbl_Better_Reviews {
 		/**
 		 * Models for Like and Reviews
 		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cbl-better-reviews-review.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'includes/class-cbl-better-reviews-like.php';
 
 		/**
@@ -133,6 +134,7 @@ class Cbl_Better_Reviews {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-api.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-shortcodes.php';
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-reviews-api.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-reviews-block.php';
 
 		$this->loader = new Cbl_Better_Reviews_Loader();
@@ -199,6 +201,7 @@ class Cbl_Better_Reviews {
 
 		$likes_api        = new Cbl_Better_Reviews_Public_Likes_Api( $this->get_plugin_name(), $this->get_version() );
 		$likes_shortcodes = new Cbl_Better_Reviews_Public_Likes_Shortcodes( $this->get_plugin_name(), $this->get_version() );
+		$reviews_api      = new Cbl_Better_Reviews_Public_Reviews_Api( $this->get_plugin_name(), $this->get_version() );
 		$reviews_block    = new Cbl_Better_Reviews_Public_Reviews_Block( $this->get_plugin_name(), $this->get_version() );
 
 		$this->loader->add_action( 'rest_api_init', $likes_api, 'register_endpoints' );
@@ -206,6 +209,7 @@ class Cbl_Better_Reviews {
 		$this->loader->add_action( 'init', $likes_shortcodes, 'register_shortcodes' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $likes_shortcodes, 'enqueue_scripts' );
 
+		$this->loader->add_action( 'rest_api_init', $reviews_api, 'register_endpoints' );
 		$this->loader->add_action( 'init', $reviews_block, 'setup' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $reviews_block, 'enqueue_scripts' );
 	}
