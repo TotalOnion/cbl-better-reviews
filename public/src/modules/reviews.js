@@ -4,13 +4,14 @@ import api from './api';
 const state = {
     localStorageKey: 'better-reviews-my-reviews',
     dataAttributes: {
-        reviewContainer: 'data-better-reviews-review-id',
-        averageStarsContainer: 'data-better-reviews-review-average-stars',
-        subcriteriaContainer: 'data-better-reviews-subcriteria-id',
+        reviewContainer:           'data-better-reviews-review-id',
+        averageStarsContainer:     'data-better-reviews-review-average-stars',
+        averageReviewCount:        'data-better-reviews-average-review-count',
+        subcriteriaContainer:      'data-better-reviews-subcriteria-id',
         subcriteriaScoreContainer: 'data-better-reviews-subcriteria-score',
         subcriteriaStarsContainer: 'data-better-reviews-subcriteria-stars',
-        subcriteriaReviewCount: 'data-better-reviews-subcriteria-review-count',
-        averageScoreContainer: 'data-better-reviews-review-average-score'
+        subcriteriaReviewCount:    'data-better-reviews-subcriteria-review-count',
+        averageScoreContainer:     'data-better-reviews-review-average-score'
     },
     classNames: {
         notYetReviewed: 'better-reviews__not-yet-reviewed',
@@ -39,7 +40,9 @@ function addEventListeners(container) {
     document
         .addEventListener(
             'better-reviews:reviews-loaded',
-            renderReviews
+            (event) => {
+                renderReviews(event.detail);
+            }
         )
     ;
 }
@@ -65,7 +68,8 @@ function loadReviews() {
         .load_reviews(
             idsOnPage,
             (response) => {
-                renderReviews(response);
+                const event = new CustomEvent('better-reviews:reviews-loaded', { detail: response });
+                document.dispatchEvent(event);
             },
             (a,b,c,d) => {
                 console.error('Fail!!', a, b, c, d);
@@ -141,6 +145,7 @@ function renderAverage(reviewElement, data) {
         .forEach((scoreElement) => renderScore(scoreElement, data['totals'].total, data['totals'].count))
     ;
 
+    // Stars
     reviewElement
         .querySelectorAll(`[${state.dataAttributes.averageStarsContainer}]`)
         .forEach((starsElement) => renderStars(starsElement, data['totals'].total, data['totals'].count))
@@ -148,7 +153,7 @@ function renderAverage(reviewElement, data) {
 
     // Vote count
     reviewElement
-        .querySelectorAll(`[${state.dataAttributes.subcriteriaReviewCount}]`)
+        .querySelectorAll(`[${state.dataAttributes.averageReviewCount}]`)
         .forEach((countElement) => renderCount(countElement, data['totals'].count))
     ;
 }

@@ -105,7 +105,9 @@ class Cbl_Better_Reviews_Public_Review_Api {
 
 	public function review( \WP_REST_Request $request ) {
         try {
-            return $this->review->save( $this->payload );
+            return array(
+				$this->review->get_post_id() => $this->review->save( $this->payload )
+			);
         } catch ( \Exception $e ) {
 			return new \WP_Error(
 				$e->getCode(),

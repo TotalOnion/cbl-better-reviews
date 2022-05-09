@@ -90,12 +90,12 @@ function submitForm(event) {
         .getAttribute(state.dataAttributes.openModalContainer)
     ;
 
-    console.log(formData);
     api.review(
         postId,
         formData,
         (response) => {
-            console.log('Success!!', response);
+            const event = new CustomEvent('better-reviews:reviews-loaded', { detail: response });
+            document.dispatchEvent(event);
         },
         (a,b,c) => {
             console.log('Error!!', a, b, c);

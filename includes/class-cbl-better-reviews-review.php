@@ -22,6 +22,11 @@ class Cbl_Better_Reviews_Review {
 		$this->init();
 	}
 
+    public function get_post_id(): int
+    {
+        return $this->post_id;
+    }
+
     /**
 	* Fetch the options and settings for this review type
 	*
@@ -111,6 +116,8 @@ class Cbl_Better_Reviews_Review {
     public function load(): array
     {
         $response = array();
+        $total = 0;
+        $count = 0;
         foreach ( $this->options['subtype'] as $subtype ) {
             $subcriteria_total_key = 'total_' . $subtype['product_subtype_id'];
             $subcriteria_total = (float)get_post_meta( $this->post_id, $subcriteria_total_key, true );
@@ -118,11 +125,19 @@ class Cbl_Better_Reviews_Review {
             $subcriteria_count_key = 'count_' . $subtype['product_subtype_id'];
             $subcriteria_count = (int)get_post_meta( $this->post_id, $subcriteria_count_key, true );
 
+            $total += $subcriteria_total;
+            $count += $subcriteria_count;
+
             $response[$subtype['product_subtype_id']] = array(
                 'total' => (float)$subcriteria_total,
                 'count' => (int)$subcriteria_count,
             );
         }
+
+        $response['totals'] = array(
+            'total' => $total,
+            'count' => $count,
+        );
 
         return $response;
     }
