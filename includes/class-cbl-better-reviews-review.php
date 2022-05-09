@@ -12,8 +12,8 @@
  */
 class Cbl_Better_Reviews_Review {
 
-    const ERROR_MISSING_OR_INVALID_CONFIG = 'ERROR_MISSING_OR_INVALID_CONFIG';
-    const ERROR_MISSING_OR_UNKNOWN_SUBCRITERIA_KEY = 'ERROR_MISSING_OR_UNKNOWN_SUBCRITERIA_KEY';
+    const ERROR_MISSING_OR_INVALID_CONFIG          = 'ERROR_MISSING_OR_INVALID_CONFIG';
+    const ERROR_NO_VALID_SUBCRITERIA_DATA          = 'ERROR_NO_VALID_SUBCRITERIA_DATA';
 
 	private int $post_id;
 
@@ -60,16 +60,19 @@ class Cbl_Better_Reviews_Review {
 	*/
 	public function validate_payload( \stdClass $payload )
 	{
+        $hasAtLeastOneValidSubcriteria = false;
+
         foreach ( $this->options['subtype'] as $subtype ) {
-            if (
-                ! array_key_exists( 'product_subtype_id', $subtype )
-                || ! property_exists( $payload, $subtype['product_subtype_id'] )
-            ) {
-                throw new \Exception(
-                    __( 'The subcriteria key submitted to the review does not match any known key for this review type.', 'CBL Better Reviews: API' ),
-                    self::ERROR_MISSING_OR_UNKNOWN_SUBCRITERIA_KEY
-                );
+            if ( property_exists( $payload, $subtype['product_subtype_id'] ) ) {
+                $hasAtLeastOneValidSubcriteria = true;
             }
+        }
+
+        if ( ! $hasAtLeastOneValidSubcriteria ) {
+            throw new \Exception(
+                __( 'Either no subcriteria data has been sent, or the subcriteria keys did not match the config for this Entity', 'CBL Better Reviews: API' ),
+                self::ERROR_NO_VALID_SUBCRITERIA_DATA
+            );
         }
 	}
 
