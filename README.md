@@ -57,3 +57,8 @@ Include the total number of things they have liked using a shortcode:
 
 ### How to do stars in css
 https://codepen.io/andreacrawford/pen/NvqJXW
+
+### Add inline ratings via a shortcode
+```
+[better-reviews post_id="12345" display="inline_rating"]
+```

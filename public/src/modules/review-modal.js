@@ -15,9 +15,7 @@ const state = {
 };
 
 function init() {
-    console.log(' -- starting reviews js');
     addEventListeners(document);
-    window.test = state;
 }
 
 function addEventListeners(container) {

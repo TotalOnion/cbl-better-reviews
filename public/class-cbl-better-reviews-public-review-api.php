@@ -10,9 +10,10 @@
  * @subpackage Cbl_Better_Reviews/public
  * @author	 Heavyweight <enquiries@heavyweightagency.co.uk>
  */
-class Cbl_Better_Reviews_Public_Reviews_Api {
+class Cbl_Better_Reviews_Public_Review_Api {
 
-	const ERROR_MISSING_POST_IDS = 'ERROR_MISSING_POST_IDS';
+	const ERROR_MISSING_POST_ID = 'ERROR_MISSING_POST_ID';
+    const ERROR_MISSING_INVALID_PAYLOAD = 'ERROR_MISSING_INVALID_PAYLOAD';
 
     /**
      * The review being submitted
@@ -20,9 +21,9 @@ class Cbl_Better_Reviews_Public_Reviews_Api {
     private \Cbl_Better_Reviews_Review $review;
 
     /**
-     * The post_ids we need to load
+     * The new review data payload
      */
-    private array $post_ids;
+    private \stdClass $payload;
 
 	/**
 	 * The ID of this plugin.
@@ -65,25 +66,35 @@ class Cbl_Better_Reviews_Public_Reviews_Api {
 
 		register_rest_route(
 			'cbl-better-reviews/v1',
-			'/reviews/(?P<ids>[0-9,]+)',
+			'/review/(?P<id>\d+)',
 			[
-				'methods' => 'GET',
-				'validate_callback' => [ $this, 'validate' ],
-				'callback' => [ $this, 'load' ],
+				'methods' => 'POST',
+				'validate_callback' => [ $this, 'validate_review' ],
+				'callback' => [ $this, 'review' ],
 			]
 		);
 	}
 
-	public function validate(\WP_REST_Request $request) {
+	public function validate_review(\WP_REST_Request $request) {
 		try {
-			$this->post_ids = explode(',',$request['ids']);
-
-			if ( ! $this->post_ids ) {
+			$post_id = (int)$request['id'] ?? false;
+			if ( ! $post_id ) {
 				return new \WP_Error(
-					self::ERROR_MISSING_POST_IDS,
+					self::ERROR_MISSING_POST_ID,
 					__( 'Missing or invalid Post ID.', 'CBL Better Reviews: API' )
 				);
 			}
+
+            $this->payload = json_decode( $request->get_body() );
+            if ( ! $this->payload ) {
+                return new \WP_Error(
+					self::ERROR_MISSING_INVALID_PAYLOAD,
+					__( 'Missing or invalid review payload.', 'CBL Better Reviews: API' )
+				);
+            }
+
+            $this->review = new \Cbl_Better_Reviews_Review( $post_id );
+            $this->review->validate_payload( $this->payload );
 		} catch (\Exception $e) {
 			return new \WP_Error(
 				$e->getCode(),
@@ -92,11 +103,9 @@ class Cbl_Better_Reviews_Public_Reviews_Api {
 		}
 	}
 
-	public function load( \WP_REST_Request $request )
-    {
+	public function review( \WP_REST_Request $request ) {
         try {
-            $review_collection = new \Cbl_Better_Reviews_Review_Collection;
-            return $review_collection->load( $this->post_ids );
+            return $this->review->save( $this->payload );
         } catch ( \Exception $e ) {
 			return new \WP_Error(
 				$e->getCode(),

@@ -130,6 +130,12 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 		{
 			$attributes = $this->parse_attributes( $attributes );
 
+			// TODO; the attributes are not getting pulled through from gutenberg for some reason
+			// this sets the default back.
+			if ( ! $attributes['display_full'] && ! $attributes['inline_rating'] ) {
+				$attributes['display_full'] = true;
+			}
+
 			if ( is_wp_error($attributes) ) {
 				return '';
 			}
@@ -150,7 +156,7 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 			$attributes = shortcode_atts(
 				array(
 					'post_id'       => get_the_ID(),
-					'display_full'  => true,
+					'display_full'  => false,
 					'inline_rating' => false
 				),
 				$attributes,
@@ -181,6 +187,20 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 		 */
 		public function render_shortcode( array $attributes = array() ): string
 		{
+			// move the display array into the attributes proper
+			$types = array_map(
+				function ($type) {
+					return trim($type);
+				},
+				explode(',', $attributes['display'])
+			);
+	
+			foreach ($types as $type) {
+				$attributes[$type] = true;
+			}
+			unset($attributes['display']);
+
+			// hydrate the attributes with the config from the admin
 			$attributes = $this->parse_attributes( $attributes );
 
 			if ( is_wp_error($attributes) ) {
@@ -188,19 +208,6 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 			}
 
 			$this->add_js_to_footer(self::FORCE_ADD_JS_TO_PAGE);
-	
-			$types = array_map(
-				function ($type) {
-					return trim($type);
-				},
-				explode(',', $attributes['type'])
-			);
-	
-			foreach ($types as $type) {
-				$attributes[$type] = true;
-			}
-	
-			unset($attributes['type']);
 	
 			// Return the bazaar voice code if we have an id
 			return apply_filters(
@@ -227,7 +234,10 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 				$review_modal_html = $this->render_review_modal_template( $attributes );
 
 				$html = <<<EOS
-					<section class="better-reviews__review better-reviews__review-{$attributes['post_type']}" data-better-reviews-review-id="{$attributes['post_id']}">
+					<section
+						class="better-reviews__review better-reviews__review-{$attributes['post_type']}"
+						data-better-reviews-review-id="{$attributes['post_id']}"
+					>
 						<h2 class="better-reviews__review-title">{$title}</h2>
 						<div class="better-reviews__review-breakdown">
 							<div class="better-reviews__subcriterias">
@@ -248,8 +258,16 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 EOS;
 			} else {
 				$html = <<<EOS
-					<div class="">
-						### inline review ###
+					<div
+						class="better-reviews__review  better-reviews__review-{$attributes['post_type']}"
+						data-better-reviews-review-id="{$attributes['post_id']}"
+					>
+						<div class="better-reviews__average">
+							<div
+								class="better-reviews__subcriteria-stars"
+								data-better-reviews-review-average-stars
+							></div>
+						</div>
 					</div>
 EOS;
 			}
