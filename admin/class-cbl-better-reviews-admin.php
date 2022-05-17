@@ -131,7 +131,7 @@ class Cbl_Better_Reviews_Admin {
 
 		add_settings_section(
 			$settings_section,
- 			__( 'Post Types that can have a review', $this->plugin_name),
+ 			__( 'Post Types that can have a review', 'cbl-better-reviews-admin'),
  			'',
  			$section_group
 		);
@@ -206,7 +206,7 @@ class Cbl_Better_Reviews_Admin {
 				$post_section_name,
 				array(
 					'type'         => 'string',
-					'description'  => __( 'Post Types that can be reviewed', 'cbl-better-reviews'),
+					'description'  => __( 'Post Types that can be reviewed', 'cbl-better-reviews-admin'),
 					'show_in_rest' => false,
 					'default'      => '',
 				)
@@ -356,7 +356,7 @@ EOS;
 				$subtype[ $type . '_subtype_required' ] ? 'checked="checked"' : ''
 			);
 
-			$remove_label = __( 'Remove', 'cbl-better-reviews' );
+			$remove_label = __( 'Remove', 'cbl-better-reviews-admin' );
 			$container_id = sprintf(
 				'%s_%d',
 				$section_name,
@@ -428,7 +428,7 @@ EOS;
 			'cta_label' => array(
 				'label' => __(
 					'CTA Label',
-					'cbl-better-reviews'
+					'cbl-better-reviews-admin'
 				),
 				'placeholder' =>  __(
 					'Review This Product',
@@ -438,7 +438,7 @@ EOS;
 			'review_count' => array(
 				'label' => __(
 					'Review count label',
-					'cbl-better-reviews'
+					'cbl-better-reviews-admin'
 				),
 				'placeholder' =>  __(
 					'Reviews',
@@ -452,7 +452,7 @@ EOS;
 			'review_submit_label' => array(
 				'label' => __(
 					'Review submit label',
-					'cbl-better-reviews'
+					'cbl-better-reviews-admin'
 				),
 				'placeholder' =>  __(
 					'Submit',

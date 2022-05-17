@@ -81,7 +81,7 @@ class Cbl_Better_Reviews_Public_Reviews_Api {
 			if ( ! $this->post_ids ) {
 				return new \WP_Error(
 					self::ERROR_MISSING_POST_IDS,
-					__( 'Missing or invalid Post ID.', 'CBL Better Reviews: API' )
+					__( 'Missing or invalid Post ID.', 'cbl-better-reviews-api' )
 				);
 			}
 		} catch (\Exception $e) {

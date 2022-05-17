@@ -81,7 +81,7 @@ class Cbl_Better_Reviews_Public_Review_Api {
 			if ( ! $post_id ) {
 				return new \WP_Error(
 					self::ERROR_MISSING_POST_ID,
-					__( 'Missing or invalid Post ID.', 'CBL Better Reviews: API' )
+					__( 'Missing or invalid Post ID.', 'cbl-better-reviews-api' )
 				);
 			}
 
@@ -89,7 +89,7 @@ class Cbl_Better_Reviews_Public_Review_Api {
             if ( ! $this->payload ) {
                 return new \WP_Error(
 					self::ERROR_MISSING_INVALID_PAYLOAD,
-					__( 'Missing or invalid review payload.', 'CBL Better Reviews: API' )
+					__( 'Missing or invalid review payload.', 'cbl-better-reviews-api' )
 				);
             }
 
