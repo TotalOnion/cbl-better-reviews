@@ -95,3 +95,13 @@ The html the shortcodes create is designed to be minimal and semantic so it can 
 | better_reviews_like_icon_filter | The "Like an item" icon |
 | better_reviews_personal_likes_icon_filter | The "things I have personally liked" icon |
 | better_reviews_review_block_filter | The reviews block. This filter is used for all review types. |
+
+## JS Events
+Below is a list of all the events fired.
+
+|--|--|
+| Event name | Description |
+| better-reviews:likes-ready | When the likes js is ready to use |
+| better-reviews:personal-like-total-changed | When the total number of things liked has gone up or down |
+| better-reviews:reviews-loaded | When all the review data for the page has been loaded. Data is contained in the `detail` property of the event |
+

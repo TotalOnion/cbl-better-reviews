@@ -26,6 +26,9 @@ function init() {
             renderPersonalLikesElements
         )
     ;
+
+    const event = new CustomEvent('better-reviews:likes-ready');
+    document.dispatchEvent(event);
 }
 
 function renderPersonalLikesElements() {
@@ -139,8 +142,15 @@ function togglePersonalLike(event) {
     document.dispatchEvent(new CustomEvent('better-reviews:personal-like-total-changed'));
 }
 
+function getPersonalLikedObjects() {
+    const personalLikes = getPersonalLikes();
+    return api.load_liked(personalLikes);
+}
+
 const likes = {
-    init: init
+    init: init,
+    getPersonalLikes: getPersonalLikes,
+    getPersonalLikedObjects: getPersonalLikedObjects
 };
 
 export default likes;

@@ -133,6 +133,7 @@ class Cbl_Better_Reviews {
 		 * The class responsible for defining all actions that occur in the public-facing
 		 * side of the site.
 		 */
+		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-liked-api.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-api.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-likes-shortcodes.php';
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'public/class-cbl-better-reviews-public-review-api.php';
@@ -199,14 +200,16 @@ class Cbl_Better_Reviews {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
-
+	private function define_public_hooks()
+	{
+		$liked_api        = new Cbl_Better_Reviews_Public_Liked_Api( $this->get_plugin_name(), $this->get_version() );
 		$likes_api        = new Cbl_Better_Reviews_Public_Likes_Api( $this->get_plugin_name(), $this->get_version() );
 		$likes_shortcodes = new Cbl_Better_Reviews_Public_Likes_Shortcodes( $this->get_plugin_name(), $this->get_version() );
 		$review_api       = new Cbl_Better_Reviews_Public_Review_Api( $this->get_plugin_name(), $this->get_version() );
 		$reviews_api      = new Cbl_Better_Reviews_Public_Reviews_Api( $this->get_plugin_name(), $this->get_version() );
 		$reviews_block    = new Cbl_Better_Reviews_Public_Reviews_Block( $this->get_plugin_name(), $this->get_version() );
 
+		$this->loader->add_action( 'rest_api_init', $liked_api, 'register_endpoints' );
 		$this->loader->add_action( 'rest_api_init', $likes_api, 'register_endpoints' );
 		$this->loader->add_action( 'init', $likes_shortcodes, 'register_filters' );
 		$this->loader->add_action( 'init', $likes_shortcodes, 'register_shortcodes' );

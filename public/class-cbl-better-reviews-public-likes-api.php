@@ -58,7 +58,7 @@ class Cbl_Better_Reviews_Public_Likes_Api {
 			'/like',
 			[
 				'methods' => 'POST',
-				'validate' => [ $this, 'validate_like' ],
+				'validate_callback' => [ $this, 'validate_like' ],
 				'callback' => [ $this, 'like' ],
 			]
 		);

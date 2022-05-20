@@ -46,6 +46,11 @@ const api = {
             Array.isArray(idsToLike) ? idsToLike : [idsToLike]
         );
     },
+    load_liked: (ids) => {
+        return getData(
+            `${state.baseApiEndpoint}/liked/${ids}`
+        );
+    },
     review: (id, data, successCallback, errorCallback) => {
         postData(
             `${state.baseApiEndpoint}/review/${id}`,

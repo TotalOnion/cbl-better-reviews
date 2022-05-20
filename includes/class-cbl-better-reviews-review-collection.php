@@ -1,7 +1,7 @@
 <?php
 
 /**
- * An object defining the likes on a Post
+ * A collection of reviews.
  *
  * @link       https://heavyweightagency.co.uk/
  * @since      1.0.0

@@ -97,8 +97,8 @@ function submitForm(event) {
             const event = new CustomEvent('better-reviews:reviews-loaded', { detail: response });
             document.dispatchEvent(event);
         },
-        (a,b,c) => {
-            console.log('Error!!', a, b, c);
+        (error) => {
+            console.log('Error!!', error);
         }
     );
 }
