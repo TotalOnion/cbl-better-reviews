@@ -254,36 +254,56 @@ class Cbl_Better_Reviews_Admin {
 			$subtypes = $options['subtype'];
 		}
 
-		$html = '<table class="table">';
+		echo '<table class="table">';
 
 		$fields = $this->get_post_fields();
 		foreach ( $fields as $field_value => $field_options ) {
 
 			$field_text = $options[ $field_value ] ?? '';
-
 			$explanation = $field_options['explanation'] ? "<p>{$field_options['explanation']}</p>" : '';
 
-			$html .= <<<EOS
-				<tr>
-					<td>
-						<label for="{$section_name}[{$field_value}]">{$field_options['label']}</label>
-					</td>
-					<td>
-						<input
-							type="text"
-							class="regular-text"
-							name="{$section_name}[{$field_value}]"
-							value="{$field_text}"
-							placeholder="{$field_options['placeholder']}"
-						/>
+			echo <<<EOS
+			<tr>
+				<td>
+					<label for="{$section_name}[{$field_value}]">{$field_options['label']}</label>
+				</td>
+				<td>
+EOS;
+			switch ( $field_options['type'] ) {
+				case 'textarea': {
+					wp_editor(
+						$field_text,
+						sprintf( '%s[%s]', $section_name, $field_value ),
+						array(
+							'media_buttons' => false
+						)
+					);
+					
+					break;
+				}
+
+				case 'text':
+				default:
+					echo <<<EOS
+					<input
+						type="text"
+						class="regular-text"
+						name="{$section_name}[{$field_value}]"
+						value="{$field_text}"
+						placeholder="{$field_options['placeholder']}"
+					/>
+EOS;
+					
+			}
+
+			echo <<<EOS
 						$explanation
 					</td>
 				</tr>		
 EOS;
 		}
 
-		$html .= '</table>';
-		echo $html;
+		echo '</table>';
 
 		include __DIR__ . '/partials/cbl-better-reviews-list.php';
 	}
@@ -398,6 +418,7 @@ EOS;
 
 		$fields = array(
 			'review_label' => array(
+				'type'  => 'text',
 				'label' => __(
 					'Review Title',
 					'cbl-better-reviews-admin'
@@ -412,6 +433,7 @@ EOS;
 				),
 			),
 			'average_score_label' => array(
+				'type'  => 'text',
 				'label' => __(
 					'Average Score Label',
 					'cbl-better-reviews-admin'
@@ -426,6 +448,7 @@ EOS;
 				),
 			),
 			'cta_label' => array(
+				'type'  => 'text',
 				'label' => __(
 					'CTA Label',
 					'cbl-better-reviews-admin'
@@ -436,6 +459,7 @@ EOS;
 				),
 			),
 			'review_count' => array(
+				'type'  => 'text',
 				'label' => __(
 					'Review count label',
 					'cbl-better-reviews-admin'
@@ -450,6 +474,7 @@ EOS;
 				),
 			),
 			'review_submit_label' => array(
+				'type'  => 'text',
 				'label' => __(
 					'Review submit label',
 					'cbl-better-reviews-admin'
@@ -460,6 +485,17 @@ EOS;
 				),
 				'explanation' =>  __(
 					'used in the review modal so "Submit" or "Vote" is good here',
+					'cbl-better-reviews-admin'
+				),
+			),
+			'review_thank_you' => array(
+				'type'  => 'textarea',
+				'label' => __(
+					'Thank you message',
+					'cbl-better-reviews-admin'
+				),
+				'explanation' =>  __(
+					'What message should be displayed to the user when their review has been submitted?',
 					'cbl-better-reviews-admin'
 				),
 			)
