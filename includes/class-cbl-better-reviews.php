@@ -173,13 +173,13 @@ class Cbl_Better_Reviews {
 		$admin = new Cbl_Better_Reviews_Admin( $this->get_plugin_name(), $this->get_version() );
 		$block = new Cbl_Better_Reviews_Admin_Reviews_Block( $this->get_plugin_name(), $this->get_version() );
 
+		// Add the plugin to the menu
 		$this->loader->add_action( 'admin_menu', $admin, 'add_admin_menu' );
 
-		// Register settings
+		// Settings and options page stuff
 		$this->loader->add_action( 'admin_init', $admin, 'register_settings' );
-
-		// Save/Update our plugin options
-		$this->loader->add_action('admin_init', $admin, 'update_settings');
+		$this->loader->add_action( 'admin_init', $admin, 'update_settings' );
+		$this->loader->add_action( 'admin_enqueue_scripts', $admin, 'enqueue_scripts' );
 
 		// Register the block
 		$this->loader->add_action( 'admin_enqueue_scripts', $block, 'enqueue_scripts' );

@@ -1,4 +1,4 @@
-<div>
+<div class="tab-content hidden">
 	<input
 		type="button"
 		class="button-secondary"

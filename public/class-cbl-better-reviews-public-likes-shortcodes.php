@@ -51,8 +51,8 @@ class Cbl_Better_Reviews_Public_Likes_Shortcodes {
 	 */
 	public function enqueue_scripts() {
 		wp_enqueue_script(
-			$this->plugin_name,
-			plugin_dir_url( __FILE__ ) . 'dist/likes.js',
+			$this->plugin_name . '/likes.js',
+			plugins_url( 'js/likes.js', __DIR__ . '..' ),
 			[],
 			$this->version,
 			true

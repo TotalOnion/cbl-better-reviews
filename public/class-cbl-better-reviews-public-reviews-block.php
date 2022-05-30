@@ -20,7 +20,7 @@
 class Cbl_Better_Reviews_Public_Reviews_Block {
 	
 		const FORCE_ADD_JS_TO_PAGE = true;
-		const JS_SCRIPT_LOCATION   = 'dist/reviews.js';
+		const JS_SCRIPT_LOCATION   = 'js/reviews.js';
 	
 		/**
 		 * The ID of this plugin.
@@ -51,7 +51,7 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 		{
 			$this->plugin_name = $plugin_name;
 			$this->version     = $version;
-			$this->script_url  = plugin_dir_url(__FILE__) . self::JS_SCRIPT_LOCATION;
+			$this->script_url  = plugins_url( self::JS_SCRIPT_LOCATION, __DIR__ . '..' );
 		}
 
 		public function setup()
