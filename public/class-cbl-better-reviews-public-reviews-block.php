@@ -132,7 +132,7 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 
 			// TODO; the attributes are not getting pulled through from gutenberg for some reason
 			// this sets the default back.
-			if ( ! $attributes['display_full'] && ! $attributes['inline_rating'] ) {
+			if ( ! $attributes['display_full'] && ! $attributes['stars'] ) {
 				$attributes['display_full'] = true;
 			}
 
@@ -157,7 +157,8 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 				array(
 					'post_id'       => get_the_ID(),
 					'display_full'  => false,
-					'inline_rating' => false
+					'stars'         => false,
+					'review_count'  => false,
 				),
 				$attributes,
 				'better-reviews'
@@ -189,10 +190,10 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 		{
 			// move the display array into the attributes proper
 			$types = array_map(
-				function ($type) {
-					return trim($type);
+				function ( $type ) {
+					return trim( strtolower( $type ) );
 				},
-				explode(',', $attributes['display'])
+				explode( ',', $attributes['display'] )
 			);
 	
 			foreach ($types as $type) {
@@ -233,7 +234,7 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 				$cta_label         = __( $attributes['options']['cta_label'], 'cbl-better-reviews' );
 				$review_modal_html = $this->render_review_modal_template( $attributes );
 
-				$html = <<<EOS
+				return <<<EOS
 					<section
 						class="better-reviews__review better-reviews__review-{$attributes['post_type']}"
 						data-better-reviews-review-id="{$attributes['post_id']}"
@@ -256,23 +257,35 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 						{$review_modal_html}
 					</section>
 EOS;
-			} else {
-				$html = <<<EOS
-					<div
-						class="better-reviews__review  better-reviews__review-{$attributes['post_type']}"
-						data-better-reviews-review-id="{$attributes['post_id']}"
-					>
-						<div class="better-reviews__average">
-							<div
-								class="better-reviews__subcriteria-stars"
-								data-better-reviews-review-average-stars
-							></div>
-						</div>
-					</div>
-EOS;
 			}
-			
-			return $html;
+
+
+
+			$starsHtml = '';
+			if ( $attributes['stars'] ) {
+				$starsHtml = '<div class="better-reviews__subcriteria-stars" data-better-reviews-review-average-stars></div>';
+			}
+
+			$reviewCountHtml = '';
+			if ( $attributes['review_count'] ) {
+				$review_count_label = __(
+					$attributes['options']['review_count'],
+					'cbl-better-reviews'
+				);
+				$reviewCountHtml = '<div class="better-reviews__subcriteria-review-count"><span data-better-reviews-average-review-count></span> ' . $review_count_label . '</div>';
+			}
+
+			return <<<EOS
+				<div
+					class="better-reviews__review  better-reviews__review-{$attributes['post_type']}"
+					data-better-reviews-review-id="{$attributes['post_id']}"
+				>
+					<div class="better-reviews__average">
+						$starsHtml
+						$reviewCountHtml
+					</div>
+				</div>
+EOS;
 	}
 
 	private function render_review_subcriteria( array $attributes ): string

@@ -5,7 +5,25 @@ The Better Reviews plugin allows any post type to receive "likes", which can be 
 Better Reviews also allows any post type to be reviewed using user defined criteria each ranked from 0.5 to 5 stars which are added up to an average star rating.
 
 ## Instalation & Notes
-Install the plugin using your normal preferred method; zip, or composer.
+During this development period you need to add an entry to the `repositories` array in your `composer.json` file:
+```
+{
+    "type": "vcs",
+    "url": "https://github.com/TotalOnion/cbl-better-reviews.git"
+},
+```
+
+Additionally you need to set the minimum-stability, also in your `composer.json` file:
+```
+"minimum-stability": "dev",
+```
+
+And then run:
+```
+composer require totalonion/cbl-better-reviews
+```
+
+Once the plugin is installed, activate it in wp-admin.
 
 The plugin does not include any css. In all of the examples below the css class is irrelevant and shown for illustration only, all functionality is added using the `data-better-reviews-` prefixed attributes.
 
@@ -84,7 +102,10 @@ To add the rating block via a shortcode you can use the following:
 ```
 [better-reviews post_id="{{ post.id }}" display="inline_rating"]
 ```
-Where `display` is set to `display_full` or `inline_rating`.
+Where `display` is a csv of the following options:
+ - `display_full` which displays the full review html; subcriteria, average, star rating, and review count. Adding any other value after display_full will do nothing.
+ - `stars` displays the average star rating
+ - `review_count` displays the number of times a review has been submitted, in the form "104", or "3.2K" or "2.6M"
 
 ## Customising the html the plugin creates
 The html the shortcodes create is designed to be minimal and semantic so it can be easily styled. If however you want to change the html that the pplugin produces you can use the following filters.

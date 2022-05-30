@@ -6,7 +6,8 @@ wp.blocks.registerBlockType('cbl-better-reviews/better-reviews', {
 	attributes: {
 		//post_id: { type: 'string' },
 		display_full: { type: 'boolean', default: true },
- 		inline_rating: { type: 'boolean', default: false },
+ 		stars: { type: 'boolean', default: false },
+		review_count: { type: 'boolean', default: false },
 	},
 
 	/*
@@ -77,14 +78,27 @@ wp.blocks.registerBlockType('cbl-better-reviews/better-reviews', {
 			React.createElement(
 				'input',{
 					type: 'checkbox',
-					defaultChecked: props.attributes.inline_rating,
-					label: 'Inline rating only',
-					name: 'inline_rating',
-					id: 'inline_rating',
+					defaultChecked: props.attributes.stars,
+					label: 'Average stars',
+					name: 'stars',
+					id: 'stars',
 					onChange: onChangeCheckbox,
 				}
 			),
-			React.createElement('label', {}, 'Inline rating'),
+			React.createElement('label', {}, 'Average stars'),
+
+			React.createElement('p'),
+			React.createElement(
+				'input',{
+					type: 'checkbox',
+					defaultChecked: props.attributes.review_count,
+					label: 'Review count',
+					name: 'review_count',
+					id: 'review_count',
+					onChange: onChangeCheckbox,
+				}
+			),
+			React.createElement('label', {}, 'Review count'),
 			/*
 			React.createElement('p'),
 			React.createElement(
