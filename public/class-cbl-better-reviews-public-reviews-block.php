@@ -56,13 +56,18 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 
 		public function setup()
 		{
-			// Add shortcode
+			// Add shortcodes
 			add_shortcode(
 				'better-reviews',
 				array( $this, 'render_shortcode' )
 			);
 
-			// Add filter to shortcode
+			add_shortcode(
+				'better-reviews-page-title',
+				array( $this, 'render_page_title' )
+			);
+
+			// Add filters for the main shortcode
 			add_filter(
 				'better_reviews_review_block_filter',
 				array( $this, 'review_block_filter' ),
@@ -370,6 +375,11 @@ EOS;
 
 	private function render_review_modal_template( array $attributes ): string
 	{
+		$error_message = __(
+			$attributes['options']['review_error_message'],
+			'cbl-better-reviews'
+		);
+
 		$submit_label = __(
 			$attributes['options']['review_submit_label'],
 			'cbl-better-reviews'
@@ -396,25 +406,25 @@ EOS;
 					</h4>
 					<div class="better-reviews__subcriteria-stars" data-better-reviews-modal-subcriteria-stars>
 						<label aria-label="0.5 stars" class="rating__label rating__label--half" for="{$field_name}-05"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-05" value="0.5" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-05" value="0.5" type="radio">
 						<label aria-label="1 star" class="rating__label" for="{$field_name}-10"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-10" value="1" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-10" value="1" type="radio">
 						<label aria-label="1.5 stars" class="rating__label rating__label--half" for="{$field_name}-15"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-15" value="1.5" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-15" value="1.5" type="radio">
 						<label aria-label="2 stars" class="rating__label" for="{$field_name}-20"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-20" value="2" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-20" value="2" type="radio">
 						<label aria-label="2.5 stars" class="rating__label rating__label--half" for="{$field_name}-25"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-25" value="2.5" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-25" value="2.5" type="radio">
 						<label aria-label="3 stars" class="rating__label" for="{$field_name}-30"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-30" value="3" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-30" value="3" type="radio">
 						<label aria-label="3.5 stars" class="rating__label rating__label--half" for="{$field_name}-35"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-35" value="3.5" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-35" value="3.5" type="radio">
 						<label aria-label="4 stars" class="rating__label" for="{$field_name}-40"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-40" value="4" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-40" value="4" type="radio">
 						<label aria-label="4.5 stars" class="rating__label rating__label--half" for="{$field_name}-45"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-45" value="4.5" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-45" value="4.5" type="radio">
 						<label aria-label="5 stars" class="rating__label" for="{$field_name}-50"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input class="rating__input" name="{$field_name}" id="{$field_name}-50" value="5" type="radio">
+						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-50" value="5" type="radio">
 					</div>
 					<p class="better-reviews__subcriteria-description">
 						{$subcriteria_description}
@@ -423,22 +433,47 @@ EOS;
 EOS;
 		}
 
+		$thank_you_message = __(
+			$attributes['options']['review_thank_you'],
+			'cbl-better-reviews'
+		);
+
+		$close_label = __(
+			$attributes['options']['review_modal_close_label'],
+			'cbl-better-reviews'
+		);
+
 		$html = <<<EOS
 			<template>
-				<div class="better-reviews__modal" data-better-reviews-modal-review-id="{$attributes['post_id']}" style="margin-top:20vh;">
-					<form class="better-reviews__modal-inner">
+				<div class="better-reviews__modal" data-better-reviews-modal-review-id="{$attributes['post_id']}">
+					<form class="better-reviews__modal-inner better-reviews__modal-form">
 						<span class="better-reviews__modal-close" data-better-reviews-modal-toggle="close">x</span>
 						<div class="better-reviews__modal-content">
+							<div class="better-reviews__modal-error">$error_message</div>
 							{$subcriteria_html}
-							<button class="better-reviews__modal-submit" data-better-reviews-modal-submit>
+							<button class="better-reviews__modal-submit" data-better-reviews-modal-submit disabled>
 								{$submit_label}
 							</button>
 						</div>
 					</form>
+					<div class="better-reviews__modal-inner better-reviews__modal-thank-you">
+						<span class="better-reviews__modal-close" data-better-reviews-modal-toggle="close">x</span>
+						<div class="better-reviews__modal-content">
+							{$thank_you_message}
+							<button class="better-reviews__modal-submit" data-better-reviews-modal-toggle>
+								{$close_label}
+							</button>
+						</div>
+					</div>
 				</div>
 			</template>
 EOS;
 
 		return $html;
+	}
+
+	public function render_page_title()
+	{
+		return get_the_title();
 	}
 }

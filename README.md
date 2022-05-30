@@ -94,20 +94,23 @@ Then add in the text labels. This adds the text for your site's default language
 ### Add a rating via a Gutenberg block
 The plugin adds a Better Reviews gutenberg block that can be used on Page Single templates for any post type it is enabled on. In that block you can select if the block should show the full review frontend, including the ability to add a review, or the inline rating which will just show the avergae star rating.
 
+## Customising the thank you message
+The thank you message supports shortcodes so it can be customised as required. The plugin also comes with a basic shortcode `[better-reviews-page-title]` which will put the title of the current page in the thank you message.
+
 ### How to do pure css stars
 https://codepen.io/andreacrawford/pen/NvqJXW
 
-### Add inline ratings via a shortcode
+### Add ratings via a shortcode
 To add the rating block via a shortcode you can use the following:
 ```
-[better-reviews post_id="{{ post.id }}" display="inline_rating"]
+[better-reviews post_id="{{ post.id }}" display="stars,review_count"]
 ```
 Where `display` is a csv of the following options:
  - `display_full` which displays the full review html; subcriteria, average, star rating, and review count. Adding any other value after display_full will do nothing.
  - `stars` displays the average star rating
  - `review_count` displays the number of times a review has been submitted, in the form "104", or "3.2K" or "2.6M"
 
-## Customising the html the plugin creates
+### Customising the html the plugin creates
 The html the shortcodes create is designed to be minimal and semantic so it can be easily styled. If however you want to change the html that the pplugin produces you can use the following filters.
 
 |--|--|

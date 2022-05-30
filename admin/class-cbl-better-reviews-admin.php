@@ -467,6 +467,21 @@ EOS;
 						'cbl-better-reviews-admin'
 					),
 				),
+				'review_error_message' => array(
+					'type'  => 'text',
+					'label' => __(
+						'Review error message',
+						'cbl-better-reviews-admin'
+					),
+					'placeholder' =>  __(
+						'Please review at least one criteria',
+						'cbl-better-reviews-admin'
+					),
+					'explanation' =>  __(
+						'Displayed when a user tries to submit before completing any criteria',
+						'cbl-better-reviews-admin'
+					),
+				),
 				'review_thank_you' => array(
 					'type'  => 'textarea',
 					'label' => __(
@@ -475,6 +490,17 @@ EOS;
 					),
 					'explanation' =>  __(
 						'What message should be displayed to the user when their review has been submitted?',
+						'cbl-better-reviews-admin'
+					),
+				),
+				'review_modal_close_label' => array(
+					'type'  => 'text',
+					'label' => __(
+						'Close button label',
+						'cbl-better-reviews-admin'
+					),
+					'explanation' =>  __(
+						'What label should the close button have in the modal?',
 						'cbl-better-reviews-admin'
 					),
 				)

@@ -6,16 +6,42 @@ const state = {
     dataAttributes: {
         modalToggle: 'data-better-reviews-modal-toggle',
         reviewContainer: 'data-better-reviews-review-id',
-        openModalContainer: 'data-better-reviews-modal-review-id'
+        openModalContainer: 'data-better-reviews-modal-review-id',
+        submitButton: 'data-better-reviews-modal-submit',
+        starRatingInput: 'data-better-reviews-modal-star-rating-input'
     },
     classNames: {
         modalIsOpenBodyClass: 'better-reviews__modal-is-open',
-        hasPersonallyLiked: 'better-reviews__has-personally-reviewed'
+        hasPersonallyLiked: 'better-reviews__has-personally-reviewed',
+        reviewModalIsInvalid: 'better-reviews__modal-invalid'
+    },
+    constants: {
+
     }
 };
 
+const BUTTON_DISABLED = 'BUTTON_DISABLED';
+const BUTTON_ENABLED  = 'BUTTON_ENABLED';
+
 function init() {
     addEventListeners(document);
+}
+
+function toggleSubmitButtonState(container, newButtonState) {
+    container
+        .querySelectorAll(`[${state.dataAttributes.submitButton}]`)
+        .forEach((submitButton) => {
+            switch (newButtonState) {
+                case BUTTON_DISABLED:
+                    submitButton.setAttribute('disabled', true);
+                    break;
+                
+                case BUTTON_ENABLED:
+                    submitButton.removeAttribute('disabled');
+                    break;
+            }
+        })
+    ;
 }
 
 function addEventListeners(container) {
@@ -24,6 +50,14 @@ function addEventListeners(container) {
         .querySelectorAll(`[${state.dataAttributes.modalToggle}]`)
         .forEach((toggleElement) => {
             toggleElement.addEventListener('click', toggleModal, { passive: true });
+        })
+    ;
+
+    // whenever a rating is changed
+    container
+        .querySelectorAll(`[${state.dataAttributes.starRatingInput}]`)
+        .forEach((starRatingInput) => {
+            starRatingInput.addEventListener('change', starRatingVoteChanged, { passive: true });
         })
     ;
 
@@ -37,7 +71,6 @@ function addEventListeners(container) {
 }
 
 function toggleModal(event) {
-    console.log('toggling modal');
     const openOrClose = event.target.getAttribute(state.dataAttributes.modalToggle);
     
     switch (openOrClose) {
@@ -101,6 +134,22 @@ function submitForm(event) {
             console.log('Error!!', error);
         }
     );
+}
+
+function starRatingVoteChanged(event) {
+    const formElement = event.target.closest('form');
+    const formData = Object.fromEntries(new FormData(formElement));
+    
+    if (Object.keys(formData).length === 0) {
+        // no form data. Invalid form.
+        formElement.classList.add(state.classNames.reviewModalIsInvalid);
+        toggleSubmitButtonState(formElement, BUTTON_DISABLED);
+    } else {
+        // valid form
+        formElement.classList.remove(state.classNames.reviewModalIsInvalid);
+        toggleSubmitButtonState(formElement, BUTTON_ENABLED);
+    }
+    
 }
 
 const reviews = {
