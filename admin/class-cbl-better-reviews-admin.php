@@ -281,7 +281,7 @@ EOS;
 			$is_first_tab = false;
 		}
 
-		include __DIR__ . '/partials/review-subcriteria.php';
+		include __DIR__ . '/partials/review-criteria.php';
 	}
 
 	private function renderSubtypes(
@@ -447,6 +447,21 @@ EOS;
 					),
 					'explanation' =>  __(
 						'used in sentences like "1.1M Reviews" or "2K Votes"',
+						'cbl-better-reviews-admin'
+					),
+				),
+				'criteria_not_yet_reviewed' => array(
+					'type'  => 'text',
+					'label' => __(
+						'Criteria not yet rated',
+						'cbl-better-reviews-admin'
+					),
+					'placeholder' =>  __(
+						'Not yet rated',
+						'cbl-better-reviews-admin'
+					),
+					'explanation' =>  __(
+						'Used when individual criteria do not yet have any reviews',
 						'cbl-better-reviews-admin'
 					),
 				),

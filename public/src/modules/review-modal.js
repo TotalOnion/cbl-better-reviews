@@ -93,14 +93,12 @@ function toggleModal(event) {
 }
 
 function closeModal() {
-    console.log('Closing modal');
     document.body.classList.remove(state.classNames.modalIsOpenBodyClass);
     document.body.classList.remove(state.classNames.modalSubmissionFailed);
     document.body.classList.remove(state.classNames.modalSubmittedOk);
     document
         .querySelectorAll(`[${state.dataAttributes.openModalContainer}]`)
         .forEach((modalElement) => {
-            console.log('ll',modalElement);
             modalElement.parentNode.removeChild(modalElement);
         })
     ;
@@ -143,7 +141,7 @@ function submitForm(event) {
         (error) => {
             document.body.classList.remove(state.classNames.modalSubmittedOk);
             document.body.classList.add(state.classNames.modalSubmissionFailed);
-            console.log('Error!!', error);
+            console.error(' - Better Reviews: Error sending review form. Error was:', error);
         }
     );
 }

@@ -132,9 +132,9 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 
 			wp_localize_script(
 				self::JS_SCRIPT_LOCATION,
-				'better_reviews_config',
+				'betterReviewsConfig',
 				array(
-					'current_page_id' => get_the_id() ?? false
+					'currentPageId' => get_the_id() ?? false
 				)
 			);
 		}
@@ -242,7 +242,7 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 			$title = __( $attributes['options']['review_label'], 'cbl-better-reviews' );
 
 			if ($attributes['display_full']) {
-				$subcriteria_html  = $this->render_review_subcriteria( $attributes );
+				$criteria_html  = $this->render_review_criteria( $attributes );
 				$averages_html     = $this->render_review_averages( $attributes );
 				$cta_label         = __( $attributes['options']['cta_label'], 'cbl-better-reviews' );
 				$review_modal_html = $this->render_review_modal_template( $attributes );
@@ -254,8 +254,8 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 					>
 						<h2 class="better-reviews__review-title">{$title}</h2>
 						<div class="better-reviews__review-breakdown">
-							<div class="better-reviews__subcriterias">
-								$subcriteria_html
+							<div class="better-reviews__criterias">
+								$criteria_html
 							</div>
 							<div class="better-reviews__average">
 								$averages_html
@@ -276,7 +276,7 @@ EOS;
 
 			$starsHtml = '';
 			if ( $attributes['stars'] ) {
-				$starsHtml = '<div class="better-reviews__subcriteria-stars" data-better-reviews-review-average-stars></div>';
+				$starsHtml = '<div class="better-reviews__criteria-stars" data-better-reviews-review-average-stars></div>';
 			}
 
 			$reviewCountHtml = '';
@@ -285,7 +285,7 @@ EOS;
 					$attributes['options']['review_count'],
 					'cbl-better-reviews'
 				);
-				$reviewCountHtml = '<div class="better-reviews__subcriteria-review-count"><span data-better-reviews-average-review-count></span> ' . $review_count_label . '</div>';
+				$reviewCountHtml = '<div class="better-reviews__criteria-review-count"><span data-better-reviews-average-review-count></span> ' . $review_count_label . '</div>';
 			}
 
 			return <<<EOS
@@ -301,40 +301,51 @@ EOS;
 EOS;
 	}
 
-	private function render_review_subcriteria( array $attributes ): string
+	private function render_review_criteria( array $attributes ): string
 	{
 		$html = '';
-		foreach ( $attributes['options']['subtype'] as $subcriteria ) {
-			$subcriteria_label = __(
-				$subcriteria[ $attributes['post_type'] . '_subtype' ],
+		$criteria_not_yet_reviewed_label = addslashes(
+			__(
+				$attributes['options']['criteria_not_yet_reviewed'],
+				'cbl-better-reviews'
+			)
+		);
+
+		foreach ( $attributes['options']['subtype'] as $criteria ) {
+			$criteria_label = __(
+				$criteria[ $attributes['post_type'] . '_subtype' ],
 				'cbl-better-reviews'
 			);
 
-			$subcriteria_id = $subcriteria[ $attributes['post_type'] . '_subtype_id' ];
+			$criteria_id = $criteria[ $attributes['post_type'] . '_subtype_id' ];
 			$review_count_label = __(
 				$attributes['options']['review_count'],
 				'cbl-better-reviews'
 			);
 
 			$html .= <<<EOS
-				<div class="better-reviews__subcriteria" data-better-reviews-subcriteria-id="{$subcriteria_id}">
+				<div
+					class="better-reviews__criteria"
+					data-better-reviews-criteria-id="{$criteria_id}"
+					data-better-reviews-criteria-not-yet-reviewed-label="{$criteria_not_yet_reviewed_label}"
+				>
 					<h4
-						class="better-reviews__subcriteria-label"
+						class="better-reviews__criteria-label"
 					>
-						{$subcriteria_label}
+						{$criteria_label}
 					</h4>
 					<h3
-						class="better-reviews__subcriteria-score"
-						data-better-reviews-subcriteria-score
+						class="better-reviews__criteria-score"
+						data-better-reviews-criteria-score
 					></h3>
 					<div
-						class="better-reviews__subcriteria-stars"
-						data-better-reviews-subcriteria-stars
+						class="better-reviews__criteria-stars"
+						data-better-reviews-criteria-stars
 					></div>
 					<h5
-						class="better-reviews__subcriteria-review-count"
+						class="better-reviews__criteria-review-count"
 					>
-						(<span data-better-reviews-subcriteria-review-count>0</span> {$review_count_label})
+						(<span data-better-reviews-criteria-review-count>0</span> {$review_count_label})
 					</h5>
 				</div>
 EOS;
@@ -346,6 +357,12 @@ EOS;
 	private function render_review_averages( array $attributes ): string
 	{
 		$html = '';
+		$criteria_not_yet_reviewed_label = addslashes(
+			__(
+				$attributes['options']['criteria_not_yet_reviewed'],
+				'cbl-better-reviews'
+			)
+		);
 		$label = __(
 			$attributes['options']['average_score_label'],
 			'cbl-better-reviews'
@@ -356,22 +373,26 @@ EOS;
 		);
 
 		$html .= <<<EOS
-			<div class="better-reviews__averages" data-better-reviews-review-average>
+			<div
+				class="better-reviews__averages"
+				data-better-reviews-criteria-not-yet-reviewed-label="{$criteria_not_yet_reviewed_label}"
+				data-better-reviews-review-average
+			>
 				<h4
-					class="better-reviews__subcriteria-label"
+					class="better-reviews__criteria-label"
 				>
 					{$label}
 				</h4>
 				<h3
-					class="better-reviews__subcriteria-score"
+					class="better-reviews__criteria-score"
 					data-better-reviews-review-average-score
 				></h3>
 				<div
-					class="better-reviews__subcriteria-stars"
+					class="better-reviews__criteria-stars"
 					data-better-reviews-review-average-stars
 				></div>
 				<h5
-					class="better-reviews__subcriteria-review-count"
+					class="better-reviews__criteria-review-count"
 				>
 					(<span data-better-reviews-average-review-count>0</span> {$review_count_label})
 				</h5>
@@ -393,26 +414,26 @@ EOS;
 			'cbl-better-reviews'
 		);
 
-		$subcriteria_html = '';
-		foreach ( $attributes['options']['subtype'] as $subcriteria ) {
-			$subcriteria_label = __(
-				$subcriteria[ $attributes['post_type'] . '_subtype' ],
+		$criteria_html = '';
+		foreach ( $attributes['options']['subtype'] as $criteria ) {
+			$criteria_label = __(
+				$criteria[ $attributes['post_type'] . '_subtype' ],
 				'cbl-better-reviews'
 			);
-			$subcriteria_description = __(
-				$subcriteria[ $attributes['post_type'] . '_subtype_name' ],
+			$criteria_description = __(
+				$criteria[ $attributes['post_type'] . '_subtype_name' ],
 				'cbl-better-reviews'
 			);
 
-			$subcriteria_id = $subcriteria[ $attributes['post_type'] . '_subtype_id' ];
-			$field_name = $subcriteria_id;
+			$criteria_id = $criteria[ $attributes['post_type'] . '_subtype_id' ];
+			$field_name = $criteria_id;
 
-			$subcriteria_html .= <<<EOS
-				<div class="better-reviews__modal-subcriteria">
-					<h4 class="better-reviews__subcriteria-label">
-						{$subcriteria_label}
+			$criteria_html .= <<<EOS
+				<div class="better-reviews__modal-criteria">
+					<h4 class="better-reviews__criteria-label">
+						{$criteria_label}
 					</h4>
-					<div class="better-reviews__subcriteria-stars" data-better-reviews-modal-subcriteria-stars>
+					<div class="better-reviews__criteria-stars" data-better-reviews-modal-criteria-stars>
 						<label aria-label="0.5 stars" class="rating__label rating__label--half" for="{$field_name}-05"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
 						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-05" value="0.5" type="radio">
 						<label aria-label="1 star" class="rating__label" for="{$field_name}-10"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
@@ -434,8 +455,8 @@ EOS;
 						<label aria-label="5 stars" class="rating__label" for="{$field_name}-50"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
 						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-50" value="5" type="radio">
 					</div>
-					<p class="better-reviews__subcriteria-description">
-						{$subcriteria_description}
+					<p class="better-reviews__criteria-description">
+						{$criteria_description}
 					</p>
 				</div>
 EOS;
@@ -458,7 +479,7 @@ EOS;
 						<span class="better-reviews__modal-close" data-better-reviews-modal-toggle="close">x</span>
 						<div class="better-reviews__modal-content">
 							<div class="better-reviews__modal-error">$error_message</div>
-							{$subcriteria_html}
+							{$criteria_html}
 							<button class="better-reviews__modal-submit" data-better-reviews-modal-submit disabled>
 								{$submit_label}
 							</button>

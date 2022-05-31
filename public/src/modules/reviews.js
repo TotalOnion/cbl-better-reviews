@@ -4,19 +4,25 @@ import api from './api';
 const state = {
     localStorageKey: 'better-reviews-my-reviews',
     dataAttributes: {
-        reviewContainer:           'data-better-reviews-review-id',
-        averageStarsContainer:     'data-better-reviews-review-average-stars',
-        averageReviewCount:        'data-better-reviews-average-review-count',
-        subcriteriaContainer:      'data-better-reviews-subcriteria-id',
-        subcriteriaScoreContainer: 'data-better-reviews-subcriteria-score',
-        subcriteriaStarsContainer: 'data-better-reviews-subcriteria-stars',
-        subcriteriaReviewCount:    'data-better-reviews-subcriteria-review-count',
-        averageScoreContainer:     'data-better-reviews-review-average-score'
+        reviewContainer:                 'data-better-reviews-review-id',
+        averageContainer:                'data-better-reviews-review-average',
+        averageStarsContainer:           'data-better-reviews-review-average-stars',
+        averageReviewCount:              'data-better-reviews-average-review-count',
+        criteriaContainer:               'data-better-reviews-criteria-id',
+        criteriaScoreContainer:          'data-better-reviews-criteria-score',
+        criteriaStarsContainer:          'data-better-reviews-criteria-stars',
+        criteriaReviewCount:             'data-better-reviews-criteria-review-count',
+        averageScoreContainer:           'data-better-reviews-review-average-score',
+        criteriaNotYetReviewedLabel:     'data-better-reviews-review-criteria-not-yet-reviewed-label',
+        criteriaNotYetReviewedLabelText: 'data-better-reviews-criteria-not-yet-reviewed-label'
+
     },
     classNames: {
-        hasNoReviews: 'better-reviews__has-no-reviews',
-        notPersonallyReviewed: 'better-reviews__not-personally-reviewed',
-        hasPersonallyReviewed: 'better-reviews__has-personally-reviewed'
+        hasNoReviews:                'better-reviews__has-no-reviews',
+        notPersonallyReviewed:       'better-reviews__not-personally-reviewed',
+        hasPersonallyReviewed:       'better-reviews__has-personally-reviewed',
+        criteriaNotYetReviewed:      'better-reviews__criteria-not-yet-reviewed',
+        criteriaNotYetReviewedLabel: 'better-reviews__criteria-not-yet-reviewed-label',
     },
     starClassnames: [
         'better-reviews__star_05',
@@ -33,7 +39,6 @@ const state = {
 };
 
 function init() {
-    window.test = reviewStorage;
     addEventListeners(document);
     loadReviews();
 }
@@ -97,8 +102,8 @@ function renderReviews(data) {
 
     // add or remove the body class to say if a user has reviewed the current page
     if (
-        better_reviews_config.current_page_id
-        && reviewStorage.get().indexOf(better_reviews_config.current_page_id) >= 0
+        betterReviewsConfig.currentPageId
+        && reviewStorage.get().indexOf(betterReviewsConfig.currentPageId) >= 0
     ) {
         document.body.classList.add(state.classNames.hasPersonallyReviewed);
         document.body.classList.remove(state.classNames.notPersonallyReviewed);
@@ -109,10 +114,9 @@ function renderReviews(data) {
 }
 
 function renderReview(reviewElement, data, id) {
-    // Only render scores if we have some, otherwise add a class to say it's not been reviewed yet
+    // Add a class to say it's not been reviewed yet at all
     if (data['totals'].count == 0) {
         reviewElement.classList.add(state.classNames.hasNoReviews);
-        return;
     } else {
         reviewElement.classList.remove(state.classNames.hasNoReviews);
     }
@@ -126,58 +130,97 @@ function renderReview(reviewElement, data, id) {
         reviewElement.classList.remove(state.classNames.hasPersonallyReviewed);
     }
 
-    renderSubcriterias(reviewElement, data);
+    renderCriterias(reviewElement, data);
     renderAverage(reviewElement, data);
 }
 
-function renderSubcriterias(reviewElement, data) {
+function renderCriterias(reviewElement, data) {
     reviewElement
-        .querySelectorAll(`[${state.dataAttributes.subcriteriaContainer}]`)
-        .forEach((subcriteriaElement) => {
-            const subcriteriaKey = subcriteriaElement.getAttribute(state.dataAttributes.subcriteriaContainer);
-            renderSubcriteria(
-                subcriteriaElement,
-                data[subcriteriaKey]
+        .querySelectorAll(`[${state.dataAttributes.criteriaContainer}]`)
+        .forEach((criteriaElement) => {
+            const criteriaKey = criteriaElement.getAttribute(state.dataAttributes.criteriaContainer);
+            renderCriteria(
+                criteriaElement,
+                data[criteriaKey]
             );
         })
     ;
 }
 
-function renderSubcriteria(subcriteriaElement, data) {
+function renderCriteria(criteriaElement, data) {
+    // Add or remove an element if this criteria has yet to be rated
+    if (!data.count) {
+        const notYetReviewedLabel = document.createElement('p');
+        notYetReviewedLabel.classList.add(state.classNames.criteriaNotYetReviewedLabel);
+        notYetReviewedLabel.innerText = criteriaElement.getAttribute(state.dataAttributes.criteriaNotYetReviewedLabelText);
+        notYetReviewedLabel.setAttribute(state.dataAttributes.criteriaNotYetReviewedLabel, true);
+        criteriaElement.appendChild(notYetReviewedLabel);
+        criteriaElement.classList.add(state.classNames.criteriaNotYetReviewed);
+        return;
+    } else {
+        criteriaElement.classList.remove(state.classNames.criteriaNotYetReviewed);
+        criteriaElement
+            .querySelectorAll(`[${state.dataAttributes.criteriaNotYetReviewedLabel}]`)
+            .forEach(notYetReviewedLabel => notYetReviewedLabel.parentNode.removeChild(notYetReviewedLabel))
+        ;
+    }
+
     // Score
-    subcriteriaElement
-        .querySelectorAll(`[${state.dataAttributes.subcriteriaScoreContainer}]`)
+    criteriaElement
+        .querySelectorAll(`[${state.dataAttributes.criteriaScoreContainer}]`)
         .forEach((scoreElement) => renderScore(scoreElement, data.total, data.count))
     ;
 
     // Stars
-    subcriteriaElement
-        .querySelectorAll(`[${state.dataAttributes.subcriteriaStarsContainer}]`)
+    criteriaElement
+        .querySelectorAll(`[${state.dataAttributes.criteriaStarsContainer}]`)
         .forEach((starsElement) => renderStars(starsElement, data.total, data.count))
     ;
 
     // Vote count
-    subcriteriaElement
-        .querySelectorAll(`[${state.dataAttributes.subcriteriaReviewCount}]`)
+    criteriaElement
+        .querySelectorAll(`[${state.dataAttributes.criteriaReviewCount}]`)
         .forEach((countElement) => renderCount(countElement, data.count))
     ;
 }
 
 function renderAverage(reviewElement, data) {
+    const averageContainerElement = reviewElement.querySelector(`[${state.dataAttributes.averageContainer}]`);
+    if (!averageContainerElement) {
+        return;
+    }
+
+    // Add or remove an element if this criteria has yet to be rated
+    if (!data['totals'].count) {
+        const notYetReviewedLabel = document.createElement('p');
+        notYetReviewedLabel.classList.add(state.classNames.criteriaNotYetReviewedLabel);
+        notYetReviewedLabel.innerText = averageContainerElement.getAttribute(state.dataAttributes.criteriaNotYetReviewedLabelText);
+        notYetReviewedLabel.setAttribute(state.dataAttributes.criteriaNotYetReviewedLabel, true);
+        averageContainerElement.appendChild(notYetReviewedLabel);
+        averageContainerElement.classList.add(state.classNames.criteriaNotYetReviewed);
+        return;
+    } else {
+        averageContainerElement.classList.remove(state.classNames.criteriaNotYetReviewed);
+        averageContainerElement
+            .querySelectorAll(`[${state.dataAttributes.criteriaNotYetReviewedLabel}]`)
+            .forEach(notYetReviewedLabel => notYetReviewedLabel.parentNode.removeChild(notYetReviewedLabel))
+        ;
+    }
+
     // Score
-    reviewElement
+    averageContainerElement
         .querySelectorAll(`[${state.dataAttributes.averageScoreContainer}]`)
         .forEach((scoreElement) => renderScore(scoreElement, data['totals'].total, data['totals'].count))
     ;
 
     // Stars
-    reviewElement
+    averageContainerElement
         .querySelectorAll(`[${state.dataAttributes.averageStarsContainer}]`)
         .forEach((starsElement) => renderStars(starsElement, data['totals'].total, data['totals'].count))
     ;
 
     // Vote count
-    reviewElement
+    averageContainerElement
         .querySelectorAll(`[${state.dataAttributes.averageReviewCount}]`)
         .forEach((countElement) => renderCount(countElement, data['totals'].count))
     ;
