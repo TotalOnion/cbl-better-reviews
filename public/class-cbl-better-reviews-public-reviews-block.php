@@ -129,6 +129,14 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 				$this->version,
 				true
 			);
+
+			wp_localize_script(
+				self::JS_SCRIPT_LOCATION,
+				'better_reviews_config',
+				array(
+					'current_page_id' => get_the_id() ?? false
+				)
+			);
 		}
 	
 		public function render_block( $attributes, $content ): string
@@ -460,7 +468,7 @@ EOS;
 						<span class="better-reviews__modal-close" data-better-reviews-modal-toggle="close">x</span>
 						<div class="better-reviews__modal-content">
 							{$thank_you_message}
-							<button class="better-reviews__modal-submit" data-better-reviews-modal-toggle>
+							<button class="better-reviews__modal-submit" data-better-reviews-modal-toggle="close">
 								{$close_label}
 							</button>
 						</div>

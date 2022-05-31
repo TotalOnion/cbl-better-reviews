@@ -1,4 +1,4 @@
-import storage from './storage';
+import reviewStorage from './review-storage';
 import api from './api';
 
 const state = {
@@ -14,8 +14,9 @@ const state = {
         averageScoreContainer:     'data-better-reviews-review-average-score'
     },
     classNames: {
-        notYetReviewed: 'better-reviews__not-yet-reviewed',
-        hasPersonallyLiked: 'better-reviews__has-personally-reviewed'
+        hasNoReviews: 'better-reviews__has-no-reviews',
+        notPersonallyReviewed: 'better-reviews__not-personally-reviewed',
+        hasPersonallyReviewed: 'better-reviews__has-personally-reviewed'
     },
     starClassnames: [
         'better-reviews__star_05',
@@ -32,6 +33,7 @@ const state = {
 };
 
 function init() {
+    window.test = reviewStorage;
     addEventListeners(document);
     loadReviews();
 }
@@ -48,7 +50,7 @@ function addEventListeners(container) {
 }
 
 function loadReviews() {
-    const idsOnPage = [];
+    let idsOnPage = [];
     document
         .querySelectorAll(`[${state.dataAttributes.reviewContainer}]`)
         .forEach((reviewElement) => {
@@ -58,22 +60,23 @@ function loadReviews() {
             }
         })
     ;
+    idsOnPage = idsOnPage.filter((v, i, a) => a.indexOf(v) === i);
 
     if (!idsOnPage.length) {
-        console.warn('The better reviews js has been loaded, but there are no valid IDs on the page to fetch');
+        console.warn(' - Better Reviews: js has been loaded, but there are no valid IDs on the page to fetch');
         return;
     }
 
     api
-        .load_reviews(
-            idsOnPage,
+        .load_reviews(idsOnPage)
+        .then(
             (response) => {
                 const event = new CustomEvent('better-reviews:reviews-loaded', { detail: response });
                 document.dispatchEvent(event);
             },
-            (a,b,c,d) => {
-                console.error('Fail!!', a, b, c, d);
-            },
+            (error) => {
+                console.error(' - Better Reviews: load reviews failed with:', error);
+            }
         )
     ;
 }
@@ -86,19 +89,41 @@ function renderReviews(data) {
 
             renderReview(
                 reviewElement,
-                data[id]
+                data[id],
+                id
             );
         })
     ;
+
+    // add or remove the body class to say if a user has reviewed the current page
+    if (
+        better_reviews_config.current_page_id
+        && reviewStorage.get().indexOf(better_reviews_config.current_page_id) >= 0
+    ) {
+        document.body.classList.add(state.classNames.hasPersonallyReviewed);
+        document.body.classList.remove(state.classNames.notPersonallyReviewed);
+    } else {
+        document.body.classList.add(state.classNames.notPersonallyReviewed);
+        document.body.classList.remove(state.classNames.hasPersonallyReviewed);
+    }
 }
 
-function renderReview(reviewElement, data) {
+function renderReview(reviewElement, data, id) {
     // Only render scores if we have some, otherwise add a class to say it's not been reviewed yet
     if (data['totals'].count == 0) {
-        reviewElement.classList.add(state.classNames.notYetReviewed);
+        reviewElement.classList.add(state.classNames.hasNoReviews);
         return;
     } else {
-        reviewElement.classList.remove(state.classNames.notYetReviewed);
+        reviewElement.classList.remove(state.classNames.hasNoReviews);
+    }
+
+    // Add a class to say if this item has been personally reviewed or not
+    if (reviewStorage.get().indexOf(id) >= 0) {
+        reviewElement.classList.add(state.classNames.hasPersonallyReviewed);
+        reviewElement.classList.remove(state.classNames.notPersonallyReviewed);
+    } else {
+        reviewElement.classList.add(state.classNames.notPersonallyReviewed);
+        reviewElement.classList.remove(state.classNames.hasPersonallyReviewed);
     }
 
     renderSubcriterias(reviewElement, data);

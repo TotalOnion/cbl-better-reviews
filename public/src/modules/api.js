@@ -35,13 +35,13 @@ async function getData(url = '') {
 
 const api = {
     like: (idsToLike) => {
-        postData(
+        return postData(
             `${state.baseApiEndpoint}/like`,
             Array.isArray(idsToLike) ? idsToLike : [idsToLike]
         );
     },
     unlike: (idsToLike) => {
-        postData(
+        return postData(
             `${state.baseApiEndpoint}/unlike`,
             Array.isArray(idsToLike) ? idsToLike : [idsToLike]
         );
@@ -51,18 +51,16 @@ const api = {
             `${state.baseApiEndpoint}/liked/${ids}`
         );
     },
-    review: (id, data, successCallback, errorCallback) => {
-        postData(
+    review: (id, data) => {
+        return postData(
             `${state.baseApiEndpoint}/review/${id}`,
             data
-        )
-        .then(successCallback, errorCallback);
+        );
     },
-    load_reviews: (ids, successCallback, errorCallback) => {
-        getData(
+    load_reviews: (ids) => {
+        return getData(
             `${state.baseApiEndpoint}/reviews/${ids}`
-        )
-        .then(successCallback, errorCallback);
+        );
     }
 };
 

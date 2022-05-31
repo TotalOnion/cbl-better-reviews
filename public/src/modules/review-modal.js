@@ -1,4 +1,4 @@
-import storage from './storage';
+import reviewStorage from './review-storage';
 import api from './api';
 
 const state = {
@@ -12,6 +12,8 @@ const state = {
     },
     classNames: {
         modalIsOpenBodyClass: 'better-reviews__modal-is-open',
+        modalSubmittedOk: 'better-reviews__modal-succeeded',
+        modalSubmissionFailed: 'better-reviews__modal-failed',
         hasPersonallyLiked: 'better-reviews__has-personally-reviewed',
         reviewModalIsInvalid: 'better-reviews__modal-invalid'
     },
@@ -91,10 +93,14 @@ function toggleModal(event) {
 }
 
 function closeModal() {
+    console.log('Closing modal');
     document.body.classList.remove(state.classNames.modalIsOpenBodyClass);
+    document.body.classList.remove(state.classNames.modalSubmissionFailed);
+    document.body.classList.remove(state.classNames.modalSubmittedOk);
     document
         .querySelectorAll(`[${state.dataAttributes.openModalContainer}]`)
         .forEach((modalElement) => {
+            console.log('ll',modalElement);
             modalElement.parentNode.removeChild(modalElement);
         })
     ;
@@ -125,12 +131,18 @@ function submitForm(event) {
 
     api.review(
         postId,
-        formData,
+        formData
+    ).then(
         (response) => {
+            document.body.classList.remove(state.classNames.modalSubmissionFailed);
+            document.body.classList.add(state.classNames.modalSubmittedOk);
+            reviewStorage.add(postId);
             const event = new CustomEvent('better-reviews:reviews-loaded', { detail: response });
             document.dispatchEvent(event);
         },
         (error) => {
+            document.body.classList.remove(state.classNames.modalSubmittedOk);
+            document.body.classList.add(state.classNames.modalSubmissionFailed);
             console.log('Error!!', error);
         }
     );
