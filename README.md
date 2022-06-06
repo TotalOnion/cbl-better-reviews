@@ -83,6 +83,19 @@ And this adds the total number of things they have liked, using a shortcode:
 [better-reviews-personal-likes display="totalLikes"]
 ```
 
+### Getting a list of the things the user has liked
+Two functions are available from the `likes` module to enable you to get the list of things a user has liked.
+
+Firstly include the likes module:
+```
+import likes from './modules/likes';
+
+const likedIds = likes.getPersonalLikes();
+likes.getPersonalLikedObjects().then((likedObjects) => console.log(likedObjects));
+```
+
+`likedIds ` will be an array of integer IDs of all the items a user has liked and `likedObjects` will be an array of objects of the items a user has liked.
+
 ## Rating
 
 Ratings _do_ have to be configured in the admin as the system needs to know what the review criteria are. The admin can be found under `Pernod Ricard` -> `Better Reviews`
