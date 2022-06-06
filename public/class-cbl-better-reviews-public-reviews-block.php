@@ -142,6 +142,9 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 		public function render_block( $attributes, $content ): string
 		{
 			$attributes = $this->parse_attributes( $attributes );
+			if ( is_wp_error($attributes) ) {
+				throw new \Exception( $attributes->get_error_code() );
+			}
 
 			// TODO; the attributes are not getting pulled through from gutenberg for some reason
 			// this sets the default back.
@@ -164,7 +167,7 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 		 * Add in default values for the params, and hydrate the $attributes with
 		 * the settings from the plugin.
 		 */
-		private function parse_attributes( array $attributes = array() ): array
+		private function parse_attributes( array $attributes = array() )
 		{
 			$attributes = shortcode_atts(
 				array(
@@ -216,9 +219,8 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 
 			// hydrate the attributes with the config from the admin
 			$attributes = $this->parse_attributes( $attributes );
-
 			if ( is_wp_error($attributes) ) {
-				return '';
+				throw new \Exception( $attributes->get_error_code() );
 			}
 
 			$this->add_js_to_footer(self::FORCE_ADD_JS_TO_PAGE);
