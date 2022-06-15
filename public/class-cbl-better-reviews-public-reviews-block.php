@@ -295,7 +295,7 @@ EOS;
 					class="better-reviews__review  better-reviews__review-{$attributes['post_type']}"
 					data-better-reviews-review-id="{$attributes['post_id']}"
 				>
-					<div class="better-reviews__average">
+					<div class="better-reviews__average" data-better-reviews-review-average>
 						$starsHtml
 						$reviewCountHtml
 					</div>

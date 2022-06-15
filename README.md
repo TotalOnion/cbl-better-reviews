@@ -126,7 +126,6 @@ Where `display` is a csv of the following options:
 ### Customising the html the plugin creates
 The html the shortcodes create is designed to be minimal and semantic so it can be easily styled. If however you want to change the html that the pplugin produces you can use the following filters.
 
-|--|--|
 | filter | Used to filter the html of |
 |--|--|
 | better_reviews_like_icon_filter | The "Like an item" icon |
@@ -136,9 +135,14 @@ The html the shortcodes create is designed to be minimal and semantic so it can 
 ## JS Events
 Below is a list of all the events fired.
 
-|--|--|
 | Event name | Description |
+|--|--|
 | better-reviews:likes-ready | When the likes js is ready to use |
 | better-reviews:personal-like-total-changed | When the total number of things liked has gone up or down |
 | better-reviews:reviews-loaded | When all the review data for the page has been loaded. Data is contained in the `detail` property of the event |
 
+## Building the plugin locally
+```
+npm install
+npx webpack --mode=development
+```
