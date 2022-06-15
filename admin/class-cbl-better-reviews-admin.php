@@ -467,6 +467,21 @@ EOS;
 				),
 			),
 			'modal_labels' => array(
+				'review_modal_title' => array(
+					'type'  => 'text',
+					'label' => __(
+						'Review modal title',
+						'cbl-better-reviews-admin'
+					),
+					'placeholder' =>  __(
+						'Submit',
+						'cbl-better-reviews-admin'
+					),
+					'explanation' =>  __(
+						'used in the review modal so "Rate [better-reviews-page-title]" would work well',
+						'cbl-better-reviews-admin'
+					),
+				),
 				'review_submit_label' => array(
 					'type'  => 'text',
 					'label' => __(

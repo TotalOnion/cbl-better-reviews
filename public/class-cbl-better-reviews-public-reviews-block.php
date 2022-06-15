@@ -406,6 +406,11 @@ EOS;
 
 	private function render_review_modal_template( array $attributes ): string
 	{
+		$modal_title = __(
+			$attributes['options']['review_modal_title'],
+			'cbl-better-reviews'
+		);
+
 		$error_message = __(
 			$attributes['options']['review_error_message'],
 			'cbl-better-reviews'
@@ -481,6 +486,7 @@ EOS;
 						<span class="better-reviews__modal-close" data-better-reviews-modal-toggle="close">x</span>
 						<div class="better-reviews__modal-content">
 							<div class="better-reviews__modal-error">$error_message</div>
+							<h3 class="better-reviews__modal-title">$modal_title</h3>
 							{$criteria_html}
 							<button class="better-reviews__modal-submit" data-better-reviews-modal-submit disabled>
 								{$submit_label}
