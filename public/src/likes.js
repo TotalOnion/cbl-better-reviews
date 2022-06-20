@@ -1,5 +1,5 @@
-import likes from './modules/likes';
+import likeModule from './modules/likes';
 
 window.addEventListener('DOMContentLoaded', () => {
-	likes.init();
+	likeModule.init();
 });

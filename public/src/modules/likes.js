@@ -144,7 +144,11 @@ function togglePersonalLike(event) {
 
 function getPersonalLikedObjects() {
     const personalLikes = getPersonalLikes();
-    return api.load_liked(personalLikes);
+    if (personalLikes.length) {
+        return api.load_liked(personalLikes);
+    } else {
+        return new Promise(resolve => resolve([]));
+    }
 }
 
 const likes = {
