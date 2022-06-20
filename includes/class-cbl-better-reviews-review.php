@@ -108,7 +108,7 @@ class Cbl_Better_Reviews_Review {
         $response = array();
         $total = 0;
         $count = 0;
-        foreach ( $this->options['subtype'] as $subtype ) {
+        foreach ( $this->options['subtype'] ?? [] as $subtype ) {
             $subcriteria_total_key = 'total_' . $subtype['product_subtype_id'];
             $subcriteria_total = (float)get_post_meta( $this->post_id, $subcriteria_total_key, true );
 
