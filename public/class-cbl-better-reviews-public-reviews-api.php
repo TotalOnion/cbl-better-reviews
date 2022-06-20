@@ -67,9 +67,10 @@ class Cbl_Better_Reviews_Public_Reviews_Api {
 			'cbl-better-reviews/v1',
 			'/reviews/(?P<ids>[0-9,]+)',
 			[
-				'methods' => 'GET',
-				'validate_callback' => [ $this, 'validate' ],
-				'callback' => [ $this, 'load' ],
+				'methods'             => 'GET',
+				'permission_callback' => '__return_true',
+				'validate_callback'   => [ $this, 'validate' ],
+				'callback'            => [ $this, 'load' ],
 			]
 		);
 	}

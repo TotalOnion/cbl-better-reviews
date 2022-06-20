@@ -57,9 +57,10 @@ class Cbl_Better_Reviews_Public_Liked_Api {
 			'cbl-better-reviews/v1',
 			'/liked/(?P<ids>[0-9,]+)',
 			[
-				'methods' => 'GET',
-				'validate_callback' => [ $this, 'validate' ],
-				'callback' => [ $this, 'load' ],
+				'methods'             => 'GET',
+				'validate_callback'   => [ $this, 'validate' ],
+				'permission_callback' => '__return_true',
+				'callback'            => [ $this, 'load' ],
 			]
 		);
 	}

@@ -68,9 +68,10 @@ class Cbl_Better_Reviews_Public_Review_Api {
 			'cbl-better-reviews/v1',
 			'/review/(?P<id>\d+)',
 			[
-				'methods' => 'POST',
-				'validate_callback' => [ $this, 'validate_review' ],
-				'callback' => [ $this, 'review' ],
+				'methods'             => 'POST',
+				'permission_callback' => '__return_true',
+				'validate_callback'   => [ $this, 'validate_review' ],
+				'callback'            => [ $this, 'review' ],
 			]
 		);
 	}

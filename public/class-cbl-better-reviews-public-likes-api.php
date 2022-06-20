@@ -57,9 +57,10 @@ class Cbl_Better_Reviews_Public_Likes_Api {
 			'cbl-better-reviews/v1',
 			'/like',
 			[
-				'methods' => 'POST',
-				'validate_callback' => [ $this, 'validate_like' ],
-				'callback' => [ $this, 'like' ],
+				'methods'             => 'POST',
+				'permission_callback' => '__return_true',
+				'validate_callback'   => [ $this, 'validate_like' ],
+				'callback'            => [ $this, 'like' ],
 			]
 		);
 
@@ -67,9 +68,10 @@ class Cbl_Better_Reviews_Public_Likes_Api {
 			'cbl-better-reviews/v1',
 			'/unlike',
 			[
-				'methods' => 'POST',
-				'validate_callback' => [ $this, 'validate_like' ],
-				'callback' => [ $this, 'unlike' ],
+				'methods'             => 'POST',
+				'permission_callback' => '__return_true',
+				'validate_callback'   => [ $this, 'validate_like' ],
+				'callback'            => [ $this, 'unlike' ],
 			]
 		);
 	}
