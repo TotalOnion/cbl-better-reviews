@@ -308,49 +308,58 @@ EOS;
 		$html = '';
 		$criteria_not_yet_reviewed_label = addslashes(
 			__(
-				$attributes['options']['criteria_not_yet_reviewed'],
+				$attributes['options']['criteria_not_yet_reviewed'] ?? '',
 				'cbl-better-reviews'
 			)
 		);
 
-		foreach ( $attributes['options']['subtype'] as $criteria ) {
-			$criteria_label = __(
-				$criteria[ $attributes['post_type'] . '_subtype' ],
-				'cbl-better-reviews'
-			);
+		if ( is_array( $attributes['options']['subtype'] ?? false ) ) {
+			foreach ( $attributes['options']['subtype'] as $criteria ) {
+				$criteria_label = __(
+					$criteria[ $attributes['post_type'] . '_subtype' ] ?? '',
+					'cbl-better-reviews'
+				);
 
-			$criteria_id = $criteria[ $attributes['post_type'] . '_subtype_id' ];
-			$review_count_label = __(
-				$attributes['options']['review_count'],
-				'cbl-better-reviews'
-			);
+				$criteria_id = $criteria[ $attributes['post_type'] . '_subtype_id' ];
+				$review_count_label = __(
+					$attributes['options']['review_count'] ?? '',
+					'cbl-better-reviews'
+				);
 
-			$html .= <<<EOS
-				<div
-					class="better-reviews__criteria"
-					data-better-reviews-criteria-id="{$criteria_id}"
-					data-better-reviews-criteria-not-yet-reviewed-label="{$criteria_not_yet_reviewed_label}"
-				>
-					<h4
-						class="better-reviews__criteria-label"
-					>
-						{$criteria_label}
-					</h4>
-					<h3
-						class="better-reviews__criteria-score"
-						data-better-reviews-criteria-score
-					></h3>
+				$html .= <<<EOS
 					<div
-						class="better-reviews__criteria-stars"
-						data-better-reviews-criteria-stars
-					></div>
-					<h5
-						class="better-reviews__criteria-review-count"
+						class="better-reviews__criteria"
+						data-better-reviews-criteria-id="{$criteria_id}"
+						data-better-reviews-criteria-not-yet-reviewed-label="{$criteria_not_yet_reviewed_label}"
 					>
-						(<span data-better-reviews-criteria-review-count>0</span> {$review_count_label})
-					</h5>
-				</div>
-EOS;
+						<h4
+							class="better-reviews__criteria-label"
+						>
+							{$criteria_label}
+						</h4>
+						<h3
+							class="better-reviews__criteria-score"
+							data-better-reviews-criteria-score
+						></h3>
+						<div
+							class="better-reviews__criteria-stars"
+							data-better-reviews-criteria-stars
+						></div>
+						<h5
+							class="better-reviews__criteria-review-count"
+						>
+							(<span data-better-reviews-criteria-review-count>0</span> {$review_count_label})
+						</h5>
+					</div>
+	EOS;
+			}
+		} else {
+			$setup_error_message = __(
+				'There are no criteria setup. Please configure the reviews plugin for this post type.',
+				'cbl-better-reviews-admin'
+			);
+
+			$html = '<div class="better-reviews__setup-error">' . $setup_error_message . '</div>';
 		}
 
 		return $html;
@@ -361,16 +370,16 @@ EOS;
 		$html = '';
 		$criteria_not_yet_reviewed_label = addslashes(
 			__(
-				$attributes['options']['criteria_not_yet_reviewed'],
+				$attributes['options']['criteria_not_yet_reviewed'] ?? '',
 				'cbl-better-reviews'
 			)
 		);
 		$label = __(
-			$attributes['options']['average_score_label'],
+			$attributes['options']['average_score_label'] ?? '',
 			'cbl-better-reviews'
 		);
 		$review_count_label = __(
-			$attributes['options']['review_count'],
+			$attributes['options']['review_count'] ?? '',
 			'cbl-better-reviews'
 		);
 
@@ -407,75 +416,84 @@ EOS;
 	private function render_review_modal_template( array $attributes ): string
 	{
 		$modal_title = __(
-			$attributes['options']['review_modal_title'],
+			$attributes['options']['review_modal_title'] ?? '',
 			'cbl-better-reviews'
 		);
 
 		$error_message = __(
-			$attributes['options']['review_error_message'],
+			$attributes['options']['review_error_message'] ?? '',
 			'cbl-better-reviews'
 		);
 
 		$submit_label = __(
-			$attributes['options']['review_submit_label'],
+			$attributes['options']['review_submit_label'] ?? '',
 			'cbl-better-reviews'
 		);
 
 		$criteria_html = '';
-		foreach ( $attributes['options']['subtype'] as $criteria ) {
-			$criteria_label = __(
-				$criteria[ $attributes['post_type'] . '_subtype' ],
-				'cbl-better-reviews'
-			);
-			$criteria_description = __(
-				$criteria[ $attributes['post_type'] . '_subtype_name' ],
-				'cbl-better-reviews'
-			);
+		if ( is_array($attributes['options']['subtype'] ?? false) ) {
+			foreach ( $attributes['options']['subtype'] ?? [] as $criteria ) {
+				$criteria_label = __(
+					$criteria[ $attributes['post_type'] . '_subtype' ],
+					'cbl-better-reviews'
+				);
+				$criteria_description = __(
+					$criteria[ $attributes['post_type'] . '_subtype_name' ],
+					'cbl-better-reviews'
+				);
 
-			$criteria_id = $criteria[ $attributes['post_type'] . '_subtype_id' ];
-			$field_name = $criteria_id;
+				$criteria_id = $criteria[ $attributes['post_type'] . '_subtype_id' ];
+				$field_name = $criteria_id;
 
-			$criteria_html .= <<<EOS
-				<div class="better-reviews__modal-criteria">
-					<h4 class="better-reviews__criteria-label">
-						{$criteria_label}
-					</h4>
-					<div class="better-reviews__criteria-stars" data-better-reviews-modal-criteria-stars>
-						<label aria-label="0.5 stars" class="rating__label rating__label--half" for="{$field_name}-05"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-05" value="0.5" type="radio">
-						<label aria-label="1 star" class="rating__label" for="{$field_name}-10"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-10" value="1" type="radio">
-						<label aria-label="1.5 stars" class="rating__label rating__label--half" for="{$field_name}-15"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-15" value="1.5" type="radio">
-						<label aria-label="2 stars" class="rating__label" for="{$field_name}-20"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-20" value="2" type="radio">
-						<label aria-label="2.5 stars" class="rating__label rating__label--half" for="{$field_name}-25"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-25" value="2.5" type="radio">
-						<label aria-label="3 stars" class="rating__label" for="{$field_name}-30"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-30" value="3" type="radio">
-						<label aria-label="3.5 stars" class="rating__label rating__label--half" for="{$field_name}-35"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-35" value="3.5" type="radio">
-						<label aria-label="4 stars" class="rating__label" for="{$field_name}-40"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-40" value="4" type="radio">
-						<label aria-label="4.5 stars" class="rating__label rating__label--half" for="{$field_name}-45"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-45" value="4.5" type="radio">
-						<label aria-label="5 stars" class="rating__label" for="{$field_name}-50"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
-						<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-50" value="5" type="radio">
+				$criteria_html .= <<<EOS
+					<div class="better-reviews__modal-criteria">
+						<h4 class="better-reviews__criteria-label">
+							{$criteria_label}
+						</h4>
+						<div class="better-reviews__criteria-stars" data-better-reviews-modal-criteria-stars>
+							<label aria-label="0.5 stars" class="rating__label rating__label--half" for="{$field_name}-05"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-05" value="0.5" type="radio">
+							<label aria-label="1 star" class="rating__label" for="{$field_name}-10"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-10" value="1" type="radio">
+							<label aria-label="1.5 stars" class="rating__label rating__label--half" for="{$field_name}-15"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-15" value="1.5" type="radio">
+							<label aria-label="2 stars" class="rating__label" for="{$field_name}-20"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-20" value="2" type="radio">
+							<label aria-label="2.5 stars" class="rating__label rating__label--half" for="{$field_name}-25"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-25" value="2.5" type="radio">
+							<label aria-label="3 stars" class="rating__label" for="{$field_name}-30"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-30" value="3" type="radio">
+							<label aria-label="3.5 stars" class="rating__label rating__label--half" for="{$field_name}-35"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-35" value="3.5" type="radio">
+							<label aria-label="4 stars" class="rating__label" for="{$field_name}-40"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-40" value="4" type="radio">
+							<label aria-label="4.5 stars" class="rating__label rating__label--half" for="{$field_name}-45"><i class="rating__icon rating__icon--star fa fa-star-half"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-45" value="4.5" type="radio">
+							<label aria-label="5 stars" class="rating__label" for="{$field_name}-50"><i class="rating__icon rating__icon--star fa fa-star"></i></label>
+							<input data-better-reviews-modal-star-rating-input class="rating__input" name="{$field_name}" id="{$field_name}-50" value="5" type="radio">
+						</div>
+						<p class="better-reviews__criteria-description">
+							{$criteria_description}
+						</p>
 					</div>
-					<p class="better-reviews__criteria-description">
-						{$criteria_description}
-					</p>
-				</div>
 EOS;
+			}
+		} else {
+			$setup_error_message = __(
+				'There are no criteria setup. Please configure the reviews plugin for this post type.',
+				'cbl-better-reviews-admin'
+			);
+
+			$criteria_html = '<div class="better-reviews__setup-error">' . $setup_error_message . '</div>';
 		}
 
 		$thank_you_message = __(
-			$attributes['options']['review_thank_you'],
+			$attributes['options']['review_thank_you'] ?? '',
 			'cbl-better-reviews'
 		);
 
 		$close_label = __(
-			$attributes['options']['review_modal_close_label'],
+			$attributes['options']['review_modal_close_label'] ?? '',
 			'cbl-better-reviews'
 		);
 

@@ -12,8 +12,7 @@
  */
 class Cbl_Better_Reviews_Review {
 
-    const ERROR_MISSING_OR_INVALID_CONFIG          = 'ERROR_MISSING_OR_INVALID_CONFIG';
-    const ERROR_NO_VALID_SUBCRITERIA_DATA          = 'ERROR_NO_VALID_SUBCRITERIA_DATA';
+    const ERROR_NO_VALID_SUBCRITERIA_DATA          = 10002;
 
 	private int $post_id;
 
@@ -38,18 +37,6 @@ class Cbl_Better_Reviews_Review {
         $this->options = get_option(
             CBL_BETTER_REVIEWS_NAME . '_' . $this->post_type
         );
-
-        if (
-            ! $this->post_type
-            || ! $this->options
-            || ! is_array( $this->options['subtype'] )
-            || empty( $this->options['subtype'] )
-        ) {
-            throw new \Exception(
-                __( 'Missing or invalid configuration.', 'CBL Better Reviews: API' ),
-                self::ERROR_MISSING_OR_INVALID_CONFIG
-            );
-        }
     }
 
     /**
