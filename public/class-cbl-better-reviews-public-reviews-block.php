@@ -220,7 +220,10 @@ class Cbl_Better_Reviews_Public_Reviews_Block {
 			// hydrate the attributes with the config from the admin
 			$attributes = $this->parse_attributes( $attributes );
 			if ( is_wp_error($attributes) ) {
-				throw new \Exception( $attributes->get_error_code() );
+				return __(
+					'Better Reviews is installed and the block or shortcode has been added to the page, but the criteria have not been setup for this post type. Please configure the plugin in the admin',
+					'cbl-better-reviews-admin'
+				);
 			}
 
 			$this->add_js_to_footer(self::FORCE_ADD_JS_TO_PAGE);
