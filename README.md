@@ -96,6 +96,17 @@ likes.getPersonalLikedObjects().then((likedObjects) => console.log(likedObjects)
 
 `likedIds ` will be an array of integer IDs of all the items a user has liked and `likedObjects` will be an array of objects of the items a user has liked.
 
+### Getting the number of likes in php
+The total number of likes is saved as a post meta field called `cbl-better-reviews_likes`. You can get this value using [get_post_meta](https://developer.wordpress.org/reference/functions/get_post_meta/), for example:
+```
+$total_likes = get_post_meta( $post_id, 'cbl-better-reviews_likes', true );
+```
+Or:
+```
+$post_meta = get_post_meta( $post_id );
+$total_likes = $post_meta[ 'cbl-better-reviews_likes' ];
+```
+
 ## Rating
 
 Ratings _do_ have to be configured in the admin as the system needs to know what the review criteria are. The admin can be found under `Pernod Ricard` -> `Better Reviews`
